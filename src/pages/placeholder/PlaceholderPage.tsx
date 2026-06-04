@@ -11,7 +11,7 @@ function PlaceholderPage({ title }: PlaceholderPageProps) {
     <div className='mx-auto flex max-w-3xl flex-col gap-2'>
       <h1 className='type-heading-lg text-foreground'>{title}</h1>
       <p className='type-body-md text-muted-foreground'>
-        {t('errors.notFoundHint', { defaultValue: 'This page is coming soon.' })}
+        {t('errors.notFoundHint', { defaultValue: 'This page S is coming soon.' })}
       </p>
     </div>
   );
