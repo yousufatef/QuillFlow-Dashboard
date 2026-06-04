@@ -1,0 +1,79 @@
+/* QuillFlow Design System - semantic color tokens (Figma Foundations) */
+
+:root {
+  /* Accent */
+  --accent-50: #f9f3ea;
+  --accent-100: #eddabd;
+  --accent-200: #e4c89d;
+  --accent-300: #d8af71;
+  --accent-400: #d19f55;
+  --accent-500: #c5872b;
+  --accent-600: #b37b27;
+  --accent-700: #8c601f;
+  --accent-800: #6c4a18;
+  --accent-900: #533912;
+
+  /* Primary */
+  --primary-50: #e7ebea;
+  --primary-100: #b4c2be;
+  --primary-200: #90a59f;
+  --primary-300: #5d7c73;
+  --primary-400: #3d6258;
+  --primary-500: #0d3b2e;
+  --primary-600: #0c362a;
+  --primary-700: #092a21;
+  --primary-800: #072019;
+  --primary-900: #051913;
+
+  /* Neutral */
+  --background: #F9F9F9;
+  --neutral-50: #eaebeb;
+  --neutral-100: #bfc1c0;
+  --neutral-200: #a0a3a2;
+  --neutral-300: #757877;
+  --neutral-400: #5a5e5d;
+  --neutral-500: #313634;
+  --neutral-600: #2d312f;
+  --neutral-700: #232625;
+  --neutral-800: #1b1e1d;
+  --neutral-900: #151716;
+
+  /* Success */
+  --success-50: #e8f1ed;
+  --success-100: #b8d3c7;
+  --success-200: #96bdab;
+  --success-300: #669f85;
+  --success-400: #488d6d;
+  --success-500: #1a7049;
+  --success-600: #186642;
+  --success-700: #125034;
+  --success-800: #0e3e28;
+  --success-900: #0b2f1f;
+
+  /* Error */
+  --error-50: #f5e9e9;
+  --error-100: #dfbaba;
+  --error-200: #d09898;
+  --error-300: #bb6969;
+  --error-400: #ad4c4c;
+  --error-500: #991f1f;
+  --error-600: #8b1c1c;
+  --error-700: #6d1616;
+  --error-800: #541111;
+  --error-900: #400d0d;
+
+  /* Information */
+  --information-50: #e8ecf2;
+  --information-100: #b8c3d8;
+  --information-200: #96a5c5;
+  --information-300: #667caa;
+  --information-400: #496399;
+  --information-500: #1b3c80;
+  --information-600: #193774;
+  --information-700: #132b5b;
+  --information-800: #0f2146;
+  --information-900: #0b1936;
+
+  --white: #ffffff;
+  --black: #000000;
+}

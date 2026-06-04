@@ -1,0 +1,91 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic",
+    "helloWorld": "Hello World"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signInHint": "Use your account to continue."
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundHint": "The page you requested does not exist.",
+    "backHome": "Back home",
+    "unexpectedTitle": "Something went wrong",
+    "unexpectedHint": "An unexpected error occurred. Please try reloading the page or contact support if the issue persists.",
+    "tryAgain": "Try again",
+    "showDetails": "Show error details",
+    "hideDetails": "Hide error details",
+    "copied": "Copied to clipboard",
+    "copyError": "Copy error details"
+  },
+  "pages": {
+    "login": {
+      "title": "Welcome Back !",
+      "description": " Please enter your details to log-in",
+      "forgetPassword": "Forget Password",
+      "confirmPassword": "Confirm your password",
+      "titlePassword": "Create a New Password",
+      "descriptionPassword": "Enter a new password below. "
+    },
+    "errors": {
+      "somethingWrong": "Something went wrong",
+      "description": "An unexpected error occurred. Try reloading the page.",
+      "goBack": "Try Again"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Enter the email address associated with your \n account to receive a password reset link."
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "We sent a verification code  "
+    }
+  },
+  "forms": {
+    "errors": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid Format"
+      },
+      "otp": "Your one-time password must be 6 characters.",
+      "emailMissing": "Email is missing",
+      "passwordsMustMatch": "New password and confirm password must match",
+      "password": {
+        "required": "Password is required"
+      }
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "placeholders": {
+      "email": "Enter your email address",
+      "password": "Enter your password",
+      "newpassword": "Enter new password"
+    },
+    "buttonLabels": {
+      "signin": "login",
+      "resetLink": "Send Reset Link",
+      "didNotGetCode": "Didn’t get the code?",
+      "resendAgain": "Resend again",
+      "resendEmail": "Resend Email",
+      "verifyOtp": "Verify OTP",
+      "resetPassword": "Reset Password"
+    },
+    "messages": {
+      "otpResent": "OTP sent again"
+    },
+    "passwordRules": {
+      "length": "8-20 characters long",
+      "lowercase": "1 lowercase character (a-z)",
+      "uppercase": "1 Uppercase character (A-Z)",
+      "number": "1 number",
+      "specialCharacter": "1 Special Character",
+      "title": "Your password must contain"
+    }
+  }
+}
