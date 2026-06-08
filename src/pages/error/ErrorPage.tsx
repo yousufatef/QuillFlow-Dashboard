@@ -1,4 +1,4 @@
-import QuillFlowLogo from '@/assets/svgs/QuillFlow-logo.svg';
+import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
 import { useTranslation } from 'react-i18next';
 
 export default function ErrorPage() {

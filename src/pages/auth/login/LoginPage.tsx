@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo } from 'react';
 // import { LanguageSwitcher } from '../../../i18n/components/LanguageSwitcher';
-import QuillFlowLogo from '@/assets/svgs/QuillFlow-logo.svg';
+import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import CustomPasswordInput from '@/components/forms/CustomPasswordInput';

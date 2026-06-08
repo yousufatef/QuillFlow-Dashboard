@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo } from 'react';
-import QuillFlowLogo from '@/assets/svgs/QuillFlow-logo.svg';
+import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
 import { useSearchParams } from 'react-router-dom';
 import { FormProvider, useForm, type FieldPath } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

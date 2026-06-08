@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import sideLogo from '@/assets/svgs/side-logo.svg';
+import sideLogo from '@/assets/svgs/side-logo.svg.svg';
 import { NavLink, useLocation } from 'react-router-dom';
 import type { ComponentProps } from 'react';
 
