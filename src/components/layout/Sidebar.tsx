@@ -18,7 +18,6 @@ type SidebarSide = ComponentProps<typeof Sidebar>['side'];
 const mainNavItems = [
   { title: 'Home', href: '/', icon: 'home' },
   { title: 'Users', href: '/users', icon: 'users' },
-  { title: 'Transactions', href: '/transactions', icon: 'transactions' },
 ] as const;
 
 const cmsNavItems = [

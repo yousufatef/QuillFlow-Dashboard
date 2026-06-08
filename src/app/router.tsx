@@ -37,10 +37,7 @@ export const router = createBrowserRouter([
             path: 'users',
             element: <PlaceholderPage title='Users' />,
           },
-          {
-            path: 'transactions',
-            element: <PlaceholderPage title='Transactions' />,
-          },
+
           {
             path: 'cms/blogs',
             element: <BlogsPage />,
