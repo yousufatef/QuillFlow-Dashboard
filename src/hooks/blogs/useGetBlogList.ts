@@ -1,0 +1,30 @@
+// useGetBlogList.ts
+import { keepPreviousData } from '@tanstack/react-query';
+import { getBlogsListApi } from '@/services/blogs.service';
+import useTableSearchParam from '../useTableSearchParam';
+import useLanguageQuery from '../useLanguageQuery';
+
+const BLOGS_LIST_QUERY_KEY = 'blogsList';
+
+const normalize = (v: string | string[] | undefined): string => {
+  if (Array.isArray(v)) return v[0] ?? '';
+  return v ?? '';
+};
+
+export const useGetBlogList = () => {
+  const { pageNumber, pageSize, searchTerm, status } = useTableSearchParam();
+
+  const query = useLanguageQuery({
+    queryKey: [BLOGS_LIST_QUERY_KEY, pageNumber, pageSize, searchTerm, status],
+    queryFn: () =>
+      getBlogsListApi(
+        Number(pageNumber) || 1,
+        6,
+        normalize(searchTerm),
+        normalize(status),
+      ),
+    placeholderData: keepPreviousData,
+  });
+
+  return query
+};

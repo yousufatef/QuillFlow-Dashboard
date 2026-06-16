@@ -1,0 +1,110 @@
+import { useId, type ReactNode } from 'react';
+import {
+  Controller,
+  type ControllerFieldState,
+  type ControllerRenderProps,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from 'react-hook-form';
+
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { cn } from '@/lib/utils';
+
+import { useTranslation } from 'react-i18next';
+import FieldMessage from './FieldMessage';
+import { formFieldStyles } from './form-field.styles';
+
+export type FieldLayoutProps<TFieldValues extends FieldValues = FieldValues> = {
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
+  label?: React.ReactNode;
+  subLabel?: string;
+  optional?: boolean;
+  required?: boolean;
+  hint?: string;
+  className?: string;
+  htmlFor?: string;
+  labelClassName?: string;
+} & (
+    | {
+      children: (
+        field: ControllerRenderProps<TFieldValues, FieldPath<TFieldValues>>,
+        fieldState: ControllerFieldState,
+      ) => ReactNode;
+    }
+    | {
+      children: ReactNode;
+    }
+  );
+
+function FieldLayout<TFieldValues extends FieldValues = FieldValues>({
+  control,
+  name,
+  label,
+  subLabel,
+  optional = false,
+  required = false,
+  hint,
+  className = '',
+  htmlFor,
+  labelClassName,
+  children,
+}: FieldLayoutProps<TFieldValues>) {
+  const { t } = useTranslation('common.labels');
+  const messageId = useId();
+  const requiredMessage = `${label ?? 'This field'} is required`;
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      rules={{
+        required: required ? requiredMessage : false,
+      }}
+      render={({ field, fieldState }) => (
+        <Field
+          data-field-name={field.name}
+          data-invalid={fieldState.invalid}
+          className={className}
+        >
+          {label && (
+            <FieldLabel
+              onClick={(e) => e.preventDefault()}
+              htmlFor={htmlFor ?? field.name}
+              className={cn(formFieldStyles.label, labelClassName)}
+            >
+              {label}{' '}
+              {optional ? (
+                <span className='type-body-sm-semibold text-neutral-900'>{t('optional')}</span>
+              ) : required ? (
+                <span>&#42;</span>
+              ) : (
+                ''
+              )}
+            </FieldLabel>
+          )}
+
+          {subLabel && (
+            <FieldDescription className='type-body-sm-semibold text-neutral-900'>
+              {subLabel}
+            </FieldDescription>
+          )}
+
+          <div className='flex flex-col'>
+            {typeof children === 'function' ? children(field, fieldState) : children}
+            <div className="min-h-5 py-1">
+              <FieldMessage
+                error={fieldState.error?.message}
+                helperText={hint}
+                id={messageId}
+              />
+            </div>
+          </div>
+        </Field>
+      )}
+    />
+  );
+}
+
+export default FieldLayout;
