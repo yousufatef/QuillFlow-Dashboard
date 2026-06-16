@@ -9,7 +9,7 @@ export default function GlobalIcons() {
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <g clip-path='url(#clip0_398_2630)'>
+      <g clipPath='url(#clip0_398_2630)'>
         <mask
           id='path-1-inside-1_398_2630'
           fill='white'

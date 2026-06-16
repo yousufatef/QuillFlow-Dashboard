@@ -4,22 +4,19 @@ import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 
 import { removeAuthCookies } from '@/utils/cookies';
-import { logOutApi } from '@/pages/auth/service/auth.service';
-// import { useTranslation } from 'react-i18next';
 
-export function useLogoutApi() {
+export function useLogout() {
   const navigate = useNavigate();
-  // const { t } = useTranslation();
 
   const { mutateAsync: logOut, isPending: isLoading } = useMutation({
-    mutationFn: logOutApi,
-    onSuccess: () => {
+    mutationFn: async () => {
       removeAuthCookies();
+    },
+    onSuccess: () => {
       void navigate('/login', { replace: true });
     },
     onError: (error: Error) => {
-      const errorMsg = error.message;
-      toast.error(errorMsg);
+      toast.error(error.message);
     },
   });
 

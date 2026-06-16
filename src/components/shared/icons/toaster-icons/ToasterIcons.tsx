@@ -37,7 +37,7 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_13303_919)'>
+        <g clipPath='url(#clip0_13303_919)'>
           <path
             fill-rule='evenodd'
             clip-rule='evenodd'
@@ -64,7 +64,7 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_13303_905)'>
+        <g clipPath='url(#clip0_13303_905)'>
           <path
             fill-rule='evenodd'
             clip-rule='evenodd'
@@ -91,7 +91,7 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_13303_912)'>
+        <g clipPath='url(#clip0_13303_912)'>
           <path
             fill-rule='evenodd'
             clip-rule='evenodd'
@@ -118,7 +118,7 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_13303_926)'>
+        <g clipPath='url(#clip0_13303_926)'>
           <path
             fill-rule='evenodd'
             clip-rule='evenodd'
@@ -151,13 +151,13 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
           cy='12'
           r='10'
           stroke='#E5E5E5'
-          stroke-width='2'
+          strokeWidth='2'
         />
         <path
           d='M12 2C6.47715 2 2 6.47715 2 12'
           stroke='#C5872B'
-          stroke-width='2'
-          stroke-linecap='round'
+          strokeWidth='2'
+          strokeLinecap='round'
         />
       </svg>
     ),
@@ -169,13 +169,13 @@ const ToasterIcons = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPr
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_13303_931)'>
+        <g clipPath='url(#clip0_13303_931)'>
           <path
             d='M5 15L15 5M5 5L15 15'
             stroke='#1B1A1A'
-            stroke-width='1.5'
-            stroke-linecap='round'
-            stroke-linejoin='round'
+            strokeWidth='1.5'
+            strokeLinecap='round'
+            strokeLinejoin='round'
           />
         </g>
         <defs>

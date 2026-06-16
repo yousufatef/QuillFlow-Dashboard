@@ -12,9 +12,9 @@ export default function FalseIcon() {
       <path
         d='M12.6669 3.33325L3.3335 12.6666M3.3335 3.33325L12.6669 12.6666'
         stroke='#991F1F'
-        stroke-width='1.5'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

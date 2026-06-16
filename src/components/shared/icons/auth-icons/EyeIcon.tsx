@@ -12,7 +12,7 @@ export default function FalseIcon() {
       <path
         d='M23 7.99999C14.5 16.1028 9.8428 16.2068 1 7.99999M12.5 14.0944V16.6005M4.76754 11.1259L2.64622 13.2472M21.7675 12.9541L19.6462 10.8328'
         stroke='#1B1A1A'
-        stroke-width='1.5'
+        strokeWidth='1.5'
       />
     </svg>
   );

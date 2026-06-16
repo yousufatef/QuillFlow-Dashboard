@@ -12,8 +12,8 @@ export default function TrueIcon() {
       <path
         d='M3.3335 9.33337L5.66683 11.6667L12.6668 4.33337'
         stroke='#5A5E5D'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

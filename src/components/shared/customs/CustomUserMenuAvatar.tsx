@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { useLogoutApi } from '@/pages/auth/hooks/useLogoutApi';
+import { useLogout } from '@/pages/auth/hooks/useLogout';
 
 type CustomUserMenuAvatarProps = {
   name: string;
@@ -29,7 +29,7 @@ function getInitials(name: string) {
 }
 
 function CustomUserMenuAvatar({ name, email, imageUrl, className }: CustomUserMenuAvatarProps) {
-  const { logOut, isLoading } = useLogoutApi();
+  const { logOut, isLoading } = useLogout();
 
   return (
     <DropdownMenu>

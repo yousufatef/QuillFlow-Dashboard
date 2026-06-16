@@ -203,7 +203,7 @@ async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
-  const response = await fetch(buildUrl('auth/refresh-token'), {
+  const response = await fetch(buildUrl('auth/refresh'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Language: getCurrLocale() },
     body: JSON.stringify({ accessToken: getAuthToken(), refreshToken }),

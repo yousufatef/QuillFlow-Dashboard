@@ -1,6 +1,6 @@
-export const TOKEN = 'karak_token';
-export const REFRESH_TOKEN = 'karak_refresh_token';
-export const USER_VERIFIED = 'karak_user_verified';
+export const TOKEN = 'QuillFlow_token';
+export const REFRESH_TOKEN = 'QuillFlow_refresh_token';
+export const USER_VERIFIED = 'QuillFlow_user_verified';
 
 export const MIN_TITLE_LENGTH = 2;
 export const MAX_TITLE_LENGTH = 100;
