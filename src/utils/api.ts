@@ -101,7 +101,7 @@ function serializeBody(body: unknown): BodyInit | undefined {
 
 function buildHeaders(options: ApiRequestOptions, tokenOverride?: string): Headers {
   const headers = new Headers(options.headers);
-  headers.set('Language', getCurrLocale());
+  headers.set('x-lang', getCurrLocale());
 
   const token = tokenOverride ?? getAuthToken();
   if (!options.skipAuth && token) {
