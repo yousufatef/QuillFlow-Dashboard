@@ -42,6 +42,35 @@ export interface BlogCardProps {
   onMenuClick?: (id: string) => void;
 }
 
+export interface BlogListApiItem {
+  id: string | number;
+  nameEn?: string | null;
+  nameAr?: string | null;
+  titleEn?: string | null;
+  titleAr?: string | null;
+  title?: string | null;
+  descriptionEn?: string | null;
+  descriptionAr?: string | null;
+  description?: string | null;
+  coverImage?: string | null;
+  coverImageUrl?: string | null;
+  readOfTime?: string | number | null;
+  readTime?: string | number | null;
+  is_published?: boolean | null;
+  isPublished?: boolean | null;
+  publishedOn?: string | null;
+  created_at?: string | null;
+  createdOn?: string | null;
+  updated_at?: string | null;
+  updatedOn?: string | null;
+  articlesCount?: number | null;
+}
+
+export interface BlogListResponse {
+  result: BlogListApiItem[];
+  totalCount: number;
+}
+
 export type ActionType = 'publish' | 'unpublish' | 'edit' | 'delete';
 
 

@@ -1,5 +1,6 @@
 // BlogsPage.tsx
 import { CustomSearchBar } from '@/components/shared/customs';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BlogCard from './components/BlogCard';
 import CustomSelectorFilter from '@/components/shared/customs/CustomFilter';
@@ -11,19 +12,40 @@ import { useTranslation } from 'react-i18next';
 import { useGetBlogList } from '@/pages/cms/blogs/hooks/useGetBlogList';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import LoadingError from '@/components/shared/error/LoadingError';
-import type { BlogCardProps } from '@/pages/cms/blogs/types/blog.types';
+import type { BlogCardProps, BlogListApiItem } from '@/pages/cms/blogs/types/blog.types';
 // import { usePermissions } from '@/hooks/permissions/usePermissions';
 
-interface BlogResponse {
-  data: {
-    result: BlogCardProps[];
-    totalCount: number;
-  };
-}
+const getLocalizedValue = (
+  blog: BlogListApiItem,
+  englishKey: 'nameEn' | 'titleEn' | 'descriptionEn',
+  arabicKey: 'nameAr' | 'titleAr' | 'descriptionAr',
+  fallbackKey: 'title' | 'description',
+  isEnglish: boolean,
+) => {
+  if (isEnglish) {
+    return blog[englishKey] ?? blog[fallbackKey] ?? blog[arabicKey] ?? '';
+  }
+
+  return blog[arabicKey] ?? blog[fallbackKey] ?? blog[englishKey] ?? '';
+};
+
+const mapBlogToCard = (blog: BlogListApiItem, isEnglish: boolean): BlogCardProps => ({
+  id: String(blog.id),
+  title: getLocalizedValue(blog, 'nameEn', 'nameAr', 'title', isEnglish),
+  description: getLocalizedValue(blog, 'descriptionEn', 'descriptionAr', 'description', isEnglish),
+  readOfTime: String(blog.readOfTime ?? blog.readTime ?? 0),
+  coverImageUrl: blog.coverImageUrl ?? blog.coverImage ?? '',
+  isPublished: blog.isPublished ?? blog.is_published ?? false,
+  publishedOn: blog.publishedOn ?? null,
+  createdOn: blog.createdOn ?? blog.created_at ?? '',
+  updatedOn: blog.updatedOn ?? blog.updated_at ?? null,
+  articlesCount: blog.articlesCount ?? 0,
+});
 
 const BlogsPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const isEnglish = i18n.language === 'en';
 
   // const { hasPermission } = usePermissions();
   // const hasAddPermission = hasPermission('blogs.create');
@@ -33,9 +55,14 @@ const BlogsPage = () => {
   if (isLoading) return <MainLoader />;
   if (isError) return <LoadingError onRefetch={refetch} />;
 
-  const blogList = (data as BlogResponse)?.data?.result ?? [];
-  const totalCount = (data as BlogResponse)?.data?.totalCount ?? 0;
+  const blogList = useMemo(
+    () => (data?.result ?? []).map((blog) => mapBlogToCard(blog, isEnglish)),
+    [data?.result, isEnglish],
+  );
+  console.log('blogList', blogList);
+  const totalCount = data?.totalCount ?? blogList.length;
   const isEmpty = blogList.length === 0;
+  console.log('isEmpty', isEmpty);
 
   return (
     <PageLayout
