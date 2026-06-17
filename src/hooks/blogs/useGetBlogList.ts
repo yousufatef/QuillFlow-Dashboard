@@ -1,6 +1,6 @@
 // useGetBlogList.ts
 import { keepPreviousData } from '@tanstack/react-query';
-import { getBlogsListApi } from '@/services/blogs.service';
+import { getBlogsListApi } from '@/pages/cms/blogs/service/blogs.service';
 import useTableSearchParam from '../useTableSearchParam';
 import useLanguageQuery from '../useLanguageQuery';
 

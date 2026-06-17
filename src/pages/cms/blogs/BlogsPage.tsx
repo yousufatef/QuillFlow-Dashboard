@@ -12,7 +12,7 @@ import { useGetBlogList } from '@/pages/cms/blogs/hooks/useGetBlogList';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import LoadingError from '@/components/shared/error/LoadingError';
 import type { BlogCardProps } from '@/pages/cms/blogs/types/blog.types';
-import { usePermissions } from '@/hooks/permissions/usePermissions';
+// import { usePermissions } from '@/hooks/permissions/usePermissions';
 
 interface BlogResponse {
   data: {
@@ -25,8 +25,8 @@ const BlogsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { hasPermission } = usePermissions();
-  const hasAddPermission = hasPermission('blogs.create');
+  // const { hasPermission } = usePermissions();
+  // const hasAddPermission = hasPermission('blogs.create');
 
   const { data, isLoading, isError, refetch } = useGetBlogList();
 

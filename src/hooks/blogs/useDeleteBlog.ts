@@ -1,4 +1,4 @@
-import { deleteBlogApi } from '@/services/blogs.service';
+import { deleteBlogApi } from '@/pages/cms/blogs/service/blogs.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 export const useDeleteBlog = () => {

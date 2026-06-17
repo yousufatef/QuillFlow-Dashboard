@@ -1,9 +1,7 @@
 // useArticleSections.ts
-import { MAX_BLOG_SECTIONS } from '@/constants/blogs.constants';
-import {
-  createNewSection,
-  type BlogFormSchema,
-} from '@/pages/cms/(blogs)/create-blog/components/article/blogForm.schema';
+import { createNewSection, type BlogFormSchema } from '@/pages/cms/blogs/components/article/blogForm.schema';
+import { MAX_BLOG_SECTIONS } from '@/pages/cms/blogs/constant/blogs.constants';
+
 import { useEffect, useRef } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 

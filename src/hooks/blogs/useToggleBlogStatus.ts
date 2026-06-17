@@ -1,4 +1,4 @@
-import { toggleBlogStatusApi } from '@/services/blogs.service';
+import { toggleBlogStatusApi } from '@/pages/cms/blogs/service/blogs.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
