@@ -13,15 +13,15 @@ import ExpiredPage from '@/pages/auth/pages/errorPage/Expired';
 import Admins from '@/pages/admins/Admins';
 import NewAdmin from '@/pages/admins/pages/NewAdmin';
 import Roles from '@/pages/roles/rolesPage';
-import EditBlogPage from '@/pages/cms/(blogs)/edit-blog/EditBlogPage';
 import AddRole from '@/pages/roles/AddRole';
 import EditRole from '@/pages/roles/EditRole';
 import { UnderDevelopment } from '@/components/shared/empty-states';
-import BlogsPage from '@/pages/cms/(blogs)/blogs/BlogsPage';
-import CreateBlogPage from '@/pages/cms/(blogs)/create-blog/CreateBlogPage';
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import GuestRoute from '@/components/routes/GuestRoute';
 import Users from '@/pages/user-mangement/Users';
+import CreateBlogPage from '@/pages/cms/blogs/pages/CreateBlogPage';
+import BlogsPage from '@/pages/cms/blogs/BlogsPage';
+import EditBlogPage from '@/pages/cms/blogs/pages/EditBlogPage';
 
 export const router = createBrowserRouter([
   {

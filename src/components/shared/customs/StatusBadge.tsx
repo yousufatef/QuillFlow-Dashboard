@@ -1,5 +1,5 @@
-import { STATUS_CONFIG } from '@/constants/blogs.constants';
-import { BlogStatus } from '@/types/blog.types';
+import { STATUS_CONFIG } from '@/pages/cms/blogs/constant/blogs.constants';
+import type { BlogStatus } from '@/pages/cms/blogs/types/blog.types';
 import { useTranslation } from 'react-i18next';
 
 interface StatusBadgeProps {

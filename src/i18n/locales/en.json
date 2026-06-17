@@ -96,7 +96,11 @@
       "save_draft": "Save as Draft",
       "live_preview": "Live App Preview",
       "live_preview_subtitle": "Preview how this blog will appear to users.",
-      "edit_blog_subtitle": "Edit blog content and preview how it will appear in the karat app."
+      "edit_blog_subtitle": "Edit blog content and preview how it will appear in the karat app.",
+      "empty": {
+        "title": "No blogs yet",
+        "description": "Start by creating your first blog post."
+      }
     }
   },
   "forms": {
