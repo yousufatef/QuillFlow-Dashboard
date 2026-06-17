@@ -1,4 +1,4 @@
-import KaratLogo from '@/assets/svgs/karat-logo.svg';
+import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
 import { useTranslation } from 'react-i18next';
 import AuthBg from '@/assets/svgs/Logo.svg';
 
@@ -12,9 +12,9 @@ export default function ErrorPage() {
     >
       <section className='flex flex-col items-center text-center'>
         <img
-          src={KaratLogo}
+          src={QuillFlowLogo}
           alt='Karat Logo'
-          className='mb-8 h-11 w-40 sm:h-10 sm:w-44'
+          className='mb-8 h-20 w-56 sm:h-24 sm:w-64'
         />
 
         <h1 className='type-heading-xl mb-2'>{t('pages.errors.somethingWrong')}</h1>

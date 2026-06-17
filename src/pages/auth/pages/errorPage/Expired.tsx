@@ -1,4 +1,4 @@
-import KaratLogo from '@/assets/svgs/karat-logo.svg';
+import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
@@ -13,9 +13,9 @@ export default function ExpiredPage() {
 
         <section className='mx-auto flex h-full flex-col items-center justify-center bg-transparent md:w-md'>
           <img
-            src={KaratLogo}
+            src={QuillFlowLogo}
             alt='Karat Logo'
-            className='mb-8 h-11 w-40 items-center sm:h-10 sm:w-44'
+            className='mb-8 h-20 w-56 sm:h-24 sm:w-64'
           />
           <h1 className='type-heading-xl mb-2'>{t('pages.errors.somethingWrong')}</h1>
           <p className='type-body-lg text-neutral-400'>{t('pages.errors.description')}</p>
