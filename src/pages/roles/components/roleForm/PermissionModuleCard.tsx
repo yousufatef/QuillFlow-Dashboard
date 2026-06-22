@@ -3,7 +3,7 @@ import CustomCard from '@/components/shared/customs/CustomCard';
 import { CustomCheckbox } from '@/components/forms';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useFormContext, useWatch } from 'react-hook-form';
-  
+
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import type { PermissionApiRes, PermissionFormValue } from '@/types/permissions-types';
@@ -96,7 +96,7 @@ export default function PermissionModuleCard({
           {permissions.map((permission) => (
             <div
               key={permission.id}
-              className='flex flex-col gap-2'
+              className='flex flex-col gap-4'
             >
               <span className='type-body-sm-semibold'>{permission.permissionName}</span>
               <div className='flex flex-col gap-4'>

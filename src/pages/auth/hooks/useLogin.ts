@@ -32,9 +32,9 @@ export function useLogin() {
   >({
     mutationFn: loginApi,
     onSuccess: (user) => {
-      // support both flattened and nested API responses
       const payload: any = user ?? {};
       const data = payload.data ?? payload;
+      const isVerified = data.isVerified ?? payload.isVerified;
 
       if (data.accessToken) {
         Cookies.set(TOKEN, data.accessToken, {
@@ -50,7 +50,7 @@ export function useLogin() {
         });
       }
 
-      Cookies.set(USER_VERIFIED, String(Boolean(data.isVerified)), {
+      Cookies.set(USER_VERIFIED, String(Boolean(isVerified)), {
         ...cookieBase,
         expires: data.accessTokenExpiresAt ? new Date(data.accessTokenExpiresAt) : undefined,
       });

@@ -9,13 +9,12 @@ import { useParams } from 'react-router-dom';
 import { useAdmin } from '../hooks/useGetAdmin';
 import { useUpdateAdmin } from '@/pages/admins/hooks/useUpdateAdmin';
 import { useCreateAdmin } from '@/pages/admins/hooks/useCreateAdmin';
-// import ConfirmDialog from '@/components/shared/customs/CustomConfirmDialog';
 import PageLayout from '@/components/layout/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { createAdminSchema, type AdminFormValues } from '../schemas/admin-schema';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import ErrorPage from '@/pages/error/ErrorPage';
-import { useAdminsRolesList } from '../hooks/useGetRoles';
+import { useGetAdminRolesPermissions } from '../hooks/useGetRoles';
 import { useDirection } from '@/i18n/useDirection';
 import type { AssignedRole } from '../types/admin.types';
 
@@ -26,27 +25,25 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const direction = useDirection()
-  // const [showExitDialog, setShowExitDialog] = useState<boolean>(false);
   const isEdit = mode === 'edit';
   const { adminId } = useParams<{ adminId: string }>();
   const { adminData: admin, isLoading, error } = useAdmin(adminId ?? '', isEdit);
   const { updateAdmin } = useUpdateAdmin();
   const { createAdmin } = useCreateAdmin();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useAdminsRolesList();
-
-  const roles = data?.pages.flatMap((page) => page.data.result) ?? [];
-  const roleOptions = roles.map((role) => ({
-    value: role.id,
-    label: direction === "ltr" ? role.nameEn : role.nameAr,
-  }));
+  const { adminData: roles, isLoading: isLoadingRoles } = useGetAdminRolesPermissions();
+  const roleOptions = roles?.filter((role: AssignedRole) => role.isActive)
+    .map((role: AssignedRole) => ({
+      value: role.id,
+      label: direction === 'ltr' ? role.nameEn : role.nameAr,
+    })) ?? [];
 
   const form = useForm<AdminFormValues>({
     resolver: zodResolver(createAdminSchema(t)),
     defaultValues: {
-      fullName: admin?.fullName || '',
-      email: admin?.email || '',
-      phoneNumber: admin?.phoneNumber || '',
-      roleId: admin?.roleId || '',
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      roleId: '',
     },
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -55,11 +52,10 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
   const values = useWatch({
     control: form.control,
   });
-  const selectedRole = roles.find(
-    (r) => r.id === values.roleId
-  ) as
-    | AssignedRole
-    | undefined;
+
+  const selectedRole = roles?.find(
+    (role: AssignedRole) => role.id === values.roleId
+  );
 
   const onSubmit = (data: AdminFormValues) => {
     if (isEdit) {
@@ -69,14 +65,18 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
     }
   };
 
-  const watchAll = form.watch();
+  useEffect(() => {
+    if (!admin) return;
 
-  const errors = form.formState.errors;
-  // const isDirty = form.formState.isDirty;
-  useEffect(() => { }, [watchAll, errors]);
-  useEffect(() => { }, [watchAll, errors]);
+    form.reset({
+      fullName: admin.fullName ?? '',
+      email: admin.email ?? '',
+      phoneNumber: admin.phoneNumber ?? '',
+      roleId: admin.roleId ?? '',
+    });
+  }, [admin, form]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingRoles) {
     return <MainLoader />;
   }
 
@@ -86,8 +86,9 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form className='h-full' onSubmit={form.handleSubmit(onSubmit)}>
         <PageLayout
+          className='mt-4.5'
           mode='form'
           title={isEdit ? t('admin.editAdminUser') : t('admin.addAdminUser')}
           subtitle={t('admin.addAdminSubTitle')}
@@ -95,35 +96,15 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
           primaryLabel={isEdit ? t('admin.buttons.update') : t('admin.buttons.create')}
           secondaryLabel={t('admin.buttons.cancel')}
           onSecondaryClick={() => {
-            // if (isDirty) {
-              // setShowExitDialog(true);
-            // } else {
-              navigate(-1);
-            // }
+            navigate(-1);
           }}
         >
-          {/* <ConfirmDialog
-            open={showExitDialog}
-            title={t('common.ExitWithoutSaving')}
-            description={
-              <p className='text-muted-foreground'>
-                {t("common.AnyDiscardedUnsavedChanges")}
-              </p>
-            }
-            confirmText='Exit'
-            cancelText='Cancel'
-            onConfirm={() => navigate(-1)}
-            onCancel={() => setShowExitDialog(false)}
-            mode='destructive'
-            className='sm:max-w-86.5'
-          /> */}
-
-          <div className='grid gap-6 lg:grid-cols-[1fr_420px]'>
+          <div className='grid items-start gap-6 lg:grid-cols-[1fr_420px]'>
             {/* LEFT */}
             <div className='bg-card rounded-xl border p-6'>
               <h2 className='type-heading-sm mb-6'>{t('admin.adminInformation')}</h2>
 
-              <div className='grid gap-6 md:grid-cols-2'>
+              <div className='grid gap-x-4 gap-y-2 md:grid-cols-2 items-start'>
                 <CustomInput
                   control={form.control}
                   label={t('admin.form.lable.fullName')}
@@ -155,11 +136,7 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
                   placeholder={t('admin.form.placeholders.role')}
                   required
                   options={roleOptions}
-                  onLoadMore={fetchNextPage}
-                  hasMore={Boolean(hasNextPage)}
-                  isLoadingMore={isFetchingNextPage}
                 />
-
               </div>
             </div>
 

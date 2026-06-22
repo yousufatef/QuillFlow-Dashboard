@@ -16,13 +16,13 @@ export const useUpdateBlog = (onSuccess?: () => void) => {
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['blogsList'] });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to update blog';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to update blog';
+    //   toast.error(message);
+    // }
   });
   return { updateBlog, isLoading: isPending };
 };

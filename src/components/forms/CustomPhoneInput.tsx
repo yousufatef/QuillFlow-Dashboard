@@ -1,5 +1,5 @@
 import CustomInput, { type CustomInputProps } from './CustomInput';
-import { InputTrimmer, trimStringValues } from '@/utils/api';
+import { InputTrimmer, trimStringValues } from '@/utils/input';
 import type { FieldValues } from 'react-hook-form';
 
 type CustomPhoneInputProps<TFieldValues extends FieldValues = FieldValues> = Omit<

@@ -1,8 +1,9 @@
 import type { AppPermissions } from './permissions-types';
 
 export type ValidationErrorApiResponse = {
-  errors: Record<string, string[]>;
-  status: number;
+  errors: Record<string, string[]> | string[];
+  status?: number;
+  statusCode?: number;
 };
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -11,19 +12,16 @@ export type ApiRequestOptions = Omit<RequestInit, 'method' | 'body'> & {
   method?: HttpMethod;
   body?: unknown;
   skipAuth?: boolean;
+  showErrorToast?: boolean;
 };
 
-export type ApiErrorResponse =
-  | {
-      isError?: boolean;
-      message?: string;
-    }
-  | {
-      isError?: boolean;
-      message?: string;
-      status: number;
-      errors: Record<string, string[]>;
-    };
+export type ApiErrorResponse = {
+  isSuccess?: boolean;
+  message?: string | null;
+  status?: number;
+  statusCode?: number;
+  errors?: Record<string, string[]> | string[] | null;
+};
 
 export type ApiResult<T> = {
   result?: T;
@@ -53,10 +51,8 @@ export interface LoginResponse {
   isSuccess: boolean;
   data: LoginData;
   isVerified?: boolean;
-  refreshTokenExpiresAt?: any;
-
-  message: string;
-  errors: string[];
+  message: string | null;
+  errors: string[] | null;
   statusCode: number;
 }
 
@@ -64,7 +60,9 @@ export interface LoginData {
   accessToken: string;
   refreshToken: string;
   accessTokenExpiresAt: string;
+  refreshTokenExpiresAt?: string;
   admin: Admin;
+  isVerified?: boolean;
 }
 
 export interface Admin {
@@ -72,7 +70,7 @@ export interface Admin {
   fullName: string;
   email: string;
   isSuperAdmin: boolean;
-  permission: string[];
+  permission: AppPermissions[];
 }
 
 export type RefreshTokenResponse = {

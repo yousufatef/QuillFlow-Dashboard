@@ -6,6 +6,7 @@ import { useDirection } from '../i18n/useDirection';
 import { router } from './router';
 import { DirectionProvider } from '@/components/ui/direction';
 import { useTranslation } from 'react-i18next';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
 function App() {
   useDirection();
@@ -23,6 +24,7 @@ function App() {
   );
   const { i18n } = useTranslation();
   const isEnglish = i18n.language === 'en';
+  useNetworkStatus();
 
   return (
     <DirectionProvider direction={isEnglish ? 'ltr' : 'rtl'}>

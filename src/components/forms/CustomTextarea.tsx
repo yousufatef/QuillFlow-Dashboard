@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { InputTrimmer, trimStringValues } from '@/utils/api';
+import { InputTrimmer, trimStringValues } from '@/utils/input';
 import FieldLayout from './FieldLayout';
 import { formFieldStyles } from './form-field.styles';
 import type { FieldBaseProps } from './field.types';

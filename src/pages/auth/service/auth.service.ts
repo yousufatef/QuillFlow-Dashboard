@@ -1,9 +1,12 @@
+import Cookies from 'js-cookie';
+import { REFRESH_TOKEN, TOKEN } from '../../../constants';
 import type {
   ApiResult,
   ChangePasswordParams,
   LoginParams,
   LoginResponse,
   OtpParams,
+  RefreshTokenResponse,
   ResetAdminPasswordParams,
 } from '../types/auth.types';
 import { apiRequest } from '@/utils/api';
@@ -12,8 +15,36 @@ function getResult<T>(response: T | ApiResult<T>): T {
   return 'result' in Object(response) ? ((response as ApiResult<T>).result as T) : (response as T);
 }
 
+function getData<T>(response: T | ApiResult<T> | { data?: T }): T {
+  const result = getResult(response);
+  return 'data' in Object(result) ? ((result as { data?: T }).data as T) : (result as T);
+}
+
+function setCookieWithOptionalExpiry(name: string, value: string, expiresAt?: string) {
+  if (expiresAt) {
+    Cookies.set(name, value, { expires: new Date(expiresAt) });
+    return;
+  }
+
+  Cookies.set(name, value);
+}
+
+function saveRefreshTokens(payload: RefreshTokenResponse) {
+  const accessToken = payload.accessToken ?? payload.token;
+  const refreshToken = payload.refreshToken;
+  const accessExpires = payload.accessTokenExpiresAt ?? payload.accessTokenExpiryTime;
+  const refreshExpires = payload.refreshTokenExpiresAt ?? payload.refreshTokenExpiryTime;
+
+  if (!accessToken || !refreshToken) {
+    throw new Error('Refresh token response is missing tokens.');
+  }
+
+  setCookieWithOptionalExpiry(TOKEN, accessToken, accessExpires);
+  setCookieWithOptionalExpiry(REFRESH_TOKEN, refreshToken, refreshExpires);
+}
+
 export async function getUserDetails<TUser = unknown>() {
-  const response = await apiRequest<TUser | ApiResult<TUser>>('/users/profile', {
+  const response = await apiRequest<TUser | ApiResult<TUser>>('/identity/admin/profile', {
     method: 'GET',
   });
 
@@ -23,7 +54,7 @@ export async function getUserDetails<TUser = unknown>() {
 // ------------------------ LOGIN API ------------------------
 export async function loginApi({ email, password }: LoginParams): Promise<LoginResponse> {
   const response = await apiRequest<LoginResponse | ApiResult<LoginResponse>>(
-    'auth/login-admin',
+    'identity/admin/auth/login',
 
     {
       method: 'POST',
@@ -36,6 +67,28 @@ export async function loginApi({ email, password }: LoginParams): Promise<LoginR
   );
 
   return getResult(response);
+}
+
+// ------------------------ TOKEN REFRESH API ------------------------
+export async function refreshTokenApi(): Promise<RefreshTokenResponse> {
+  const token = Cookies.get(TOKEN);
+  const refreshToken = Cookies.get(REFRESH_TOKEN);
+
+  const response = await apiRequest<RefreshTokenResponse | ApiResult<RefreshTokenResponse>>(
+    'identity/admin/auth/refresh-token',
+    {
+      method: 'POST',
+      body: {
+        accessToken: token,
+        refreshToken,
+      },
+    },
+  );
+
+  const payload = getData(response);
+  saveRefreshTokens(payload);
+
+  return payload;
 }
 
 // ------------------------ FORGET PASSWORD API ------------------------
@@ -86,8 +139,8 @@ export async function setPasswordInviteApi({ password, token }: ResetAdminPasswo
   return apiRequest<unknown>('identity/admin/management/set-password-invite', {
     method: 'POST',
     body: {
-      newPassword: password,
-      confirmNewPassword: password,
+      password: password,
+      confirmPassword: password,
       token,
     },
   });
@@ -101,3 +154,9 @@ export async function changePasswordApi(data: ChangePasswordParams) {
   });
 }
 
+// ------------------------ LOGOUT API ------------------------
+export async function logOutApi() {
+  return apiRequest<unknown>('identity/admin/auth/logout', {
+    method: 'POST',
+  });
+}

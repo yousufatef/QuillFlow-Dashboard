@@ -13,7 +13,7 @@ type SubmitButtonProps = {
 };
 
 const SubmitButton = ({ label, className }: SubmitButtonProps) => {
-  const { t } = useTranslation('common.buttons');
+  const { t } = useTranslation();
   const {
     formState: { isSubmitting },
   } = useFormContext();
@@ -24,7 +24,7 @@ const SubmitButton = ({ label, className }: SubmitButtonProps) => {
       className={cn('w-full', className)}
       disabled={isSubmitting}
     >
-      {isSubmitting ? <Spinner /> : label || t('submit')}
+      {isSubmitting ? <Spinner /> : label || t('common.submit')}
     </Button>
   );
 };

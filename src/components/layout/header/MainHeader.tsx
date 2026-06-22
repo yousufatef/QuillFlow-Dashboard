@@ -21,7 +21,7 @@ export default function MainHeader({
   secondaryLabel = 'Export',
   onPrimaryClick,
   onSecondaryClick,
-  showPrimaryButton = true,
+  showPrimaryButton = false,
   showSecondaryButton = false,
   isPrimaryLoading = false,
   isSecondaryLoading = false,

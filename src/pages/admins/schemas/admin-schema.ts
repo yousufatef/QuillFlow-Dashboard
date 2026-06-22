@@ -6,8 +6,8 @@ export const createAdminSchema = (t: TFunction) =>
     fullName: z
       .string()
       .min(1, t('forms.errors.fullname.required'))
-      .min(3, t('forms.errors.fullname.min'))
-      .max(50, t('forms.errors.fullname.max')),
+      .min(2, t('forms.errors.fullname.min'))
+      .max(100, t('forms.errors.fullname.max')),
 
     email: z.email(t('forms.errors.email.invalid')),
 

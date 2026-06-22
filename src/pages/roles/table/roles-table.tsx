@@ -8,6 +8,7 @@ import useRoles from '@/hooks/permissions/useRoles';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import LoadingError from '@/components/shared/error/LoadingError';
 import Pagination from '@/components/shared/customs/CustomPagination';
+import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 
 const RolesTable = () => {
   const { t } = useTranslation();
@@ -38,15 +39,28 @@ const RolesTable = () => {
     {
       id: 'more',
       header: t('table.more'),
-      cell: ({ row }) => <RoleActions roleId={row.original.id} />,
+      cell: ({ row }) => (
+        <WithPermissions
+          permissions={['roles.delete', 'roles.update']}
+          require='some'
+        >
+          <RoleActions role={row.original} />
+        </WithPermissions>
+      ),
     },
   ];
 
-  const { isLoading, isError, data, refetch, isFetching } = useRoles();
+  const { isLoading, isError, error, data, refetch, isFetching } = useRoles();
 
   if (isLoading) return <MainLoader />;
 
-  if (isError) return <LoadingError onRefetch={refetch} />;
+  if (isError)
+    return (
+      <LoadingError
+        errorMsg={error.message}
+        onRefetch={refetch}
+      />
+    );
 
   const rolesList = data?.data.result || [];
   const totlaCount = data?.data.totalCount || 0;

@@ -1,14 +1,16 @@
 export const KycStatus = {
-  PENDING: 0,
-  VERIFIED: 1,
-  REJECTED: 2,
+  NONE: 0,
+  PENDING: 1,
+  APPROVED: 2,
+  REJECTED: 3,
 } as const;
 
 export type KycStatus = (typeof KycStatus)[keyof typeof KycStatus];
 
 export type ActiveStatus = 'active' | 'suspended';
 
-export const toActiveStatus = (isActive: boolean): ActiveStatus => (isActive ? 'active' : 'suspended');
+export const toActiveStatus = (isActive: boolean): ActiveStatus =>
+  isActive ? 'active' : 'suspended';
 
 export type User = {
   id: string;
@@ -35,7 +37,7 @@ export type UsersListData = {
 export type UsersListResponse = {
   statusCode: number;
   timestamp: string;
-  isError: boolean;
+  isSuccess: boolean;
   message: string;
-  result: UsersListData;
+  data: UsersListData;
 };

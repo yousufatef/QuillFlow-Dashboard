@@ -1,14 +1,4 @@
 import { apiRequest } from '../../../../utils/api';
-import type { BlogListApiItem, BlogListResponse } from '../types/blog.types';
-
-type BlogListApiEnvelope = {
-  result?: BlogListApiItem[];
-  data?: {
-    result?: BlogListApiItem[];
-    totalCount?: number;
-  };
-  totalCount?: number;
-};
 
 
 export async function buildBlogFormData(data: any, status?: boolean): Promise<FormData> {
@@ -53,7 +43,7 @@ export async function getBlogsListApi(
   pageSize: number,
   searchValue: string,
   status: string,
-): Promise<BlogListResponse> {
+) {
   const params = new URLSearchParams();
 
   params.set('PageNumber', String(pageNumber || 1));
@@ -67,13 +57,8 @@ export async function getBlogsListApi(
     params.set('IsPublished', String(isPublished));
   }
 
-  const res = await apiRequest<BlogListApiEnvelope>(`blogs?${params.toString()}`, { method: 'GET' });
-  const result = res.data?.result ?? res.result ?? [];
-
-  return {
-    result,
-    totalCount: res.data?.totalCount ?? res.totalCount ?? result.length,
-  };
+  const res = await apiRequest(`cms/blogs?${params.toString()}`, { method: 'GET' });
+  return res;
 }
 
 

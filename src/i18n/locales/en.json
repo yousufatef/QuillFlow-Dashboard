@@ -1,5 +1,10 @@
 {
   "common": {
+    "optional": "(Optional)",
+    "submit": "Submit",
+    "filters": {
+      "sortBy": "Sort by"
+    },
     "language": "Language",
     "english": "English",
     "arabic": "Arabic",
@@ -97,6 +102,9 @@
       "live_preview": "Live App Preview",
       "live_preview_subtitle": "Preview how this blog will appear to users.",
       "edit_blog_subtitle": "Edit blog content and preview how it will appear in the karat app.",
+      "unpublish_blog": "Unpublish Blog\t",
+      "unpublish_blog_desc": "Are you sure you want to unpublish this Blog?",
+      "unpublish": "Unpublish",
       "empty": {
         "title": "No blogs yet",
         "description": "Start by creating your first blog post."
@@ -118,8 +126,8 @@
       },
       "fullname": {
         "required": "Full name is required",
-        "min": "Full name must be at least 3 characters",
-        "max": "Full name must not exceed 50 characters"
+        "min": "Full name must be at least 2 characters",
+        "max": "Full name must not exceed 100 characters"
       },
       "phone": {
         "required": "Phone number is required",
@@ -307,12 +315,19 @@
       "edit": "Edit",
       "delete": "Delete",
       "deleteTitle": "Delete Role",
-      "deleteDesc1": "Are you sure you want to delete this role?",
+      "deleteDesc1": "Are you sure you want to delete role",
       "deleteDesc2": "Role",
       "deleteDesc3": "from Roles List?",
       "cancel": "Cancel",
-      "deleting": "Deleting..."
+      "deleting": "Deleting...",
+      "deleteSuccess": "Role deleted successfully",
+      "deleteFailed": "Failed to delete role",
+      "alreadyDeleted": "Role not found, it could be deleted by another admin, refreshing the list..."
     }
+  },
+  "toaster": {
+    "connectionLost": "You are currently offline. Please check your internet connection.",
+    "connectionRestored": "Back online! Your connection has been restored."
   },
   "users": {
     "title": "User Management",
@@ -325,8 +340,10 @@
     "actions": {
       "openMenu": "Open row actions",
       "reactivateAccount": "Reactivate account",
+      "reactivateAccountDescription": "Reactivating this account will immediately restore the user's access to the platform.",
       "suspendAccount": "Suspend account",
-      "forgetPassword": "Forget password"
+      "forgetPassword": "Forget password",
+      "viewActivityLog": "View activity log"
     }
   }
 }

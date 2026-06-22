@@ -17,13 +17,13 @@ export const useDraftBlog = (onSuccess?: () => void) => {
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['blogsList'] });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to save as draft';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to save as draft';
+    //   toast.error(message);
+    // }
   });
   return { draftBlog, isLoading: isPending };
 };

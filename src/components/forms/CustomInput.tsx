@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { InputTrimmer, trimStringValues } from '@/utils/api';
+import { InputTrimmer, trimStringValues } from '@/utils/input';
 import FieldLayout from './FieldLayout';
 import { formFieldStyles } from './form-field.styles';
 import type { FieldBaseProps } from './field.types';
@@ -55,7 +55,6 @@ function CustomInput<TFieldValues extends FieldValues = FieldValues>({
           aria-invalid={fieldState.invalid}
           className={cn(formFieldStyles.control, inputClassName, className)}
           id={inputId}
-          required={required}
           {...props}
           {...field}
           onBlur={(event) => {

@@ -6,10 +6,11 @@ export async function getUsersListApi(
   pageNumber = 1,
   pageSize = 10,
   searchTerm = '',
-  sort = 0,
+  SortBy = 0,
+  SortOrder = 0,
 ): Promise<UsersListResponse> {
   return apiRequest<UsersListResponse>(
-    `admin/users?${generateQueryParams({ pageNumber, pageSize, searchTerm, sort })}`,
+    `identity/admin/users?${generateQueryParams({ pageNumber, pageSize, searchTerm, SortBy, SortOrder })}`,
     { method: 'GET' },
   );
 }

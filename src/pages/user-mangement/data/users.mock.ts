@@ -8,7 +8,7 @@ export const MOCK_USERS: User[] = [
     email: 'mina.atef@example.com',
     createdOn: '2024-09-23',
     isActive: true,
-    kycStatus: KycStatus.VERIFIED,
+    kycStatus: KycStatus.APPROVED,
   },
   {
     id: '2',
@@ -35,7 +35,7 @@ export const MOCK_USERS: User[] = [
     email: 'youssef.nabil@example.com',
     createdOn: '2024-09-23',
     isActive: true,
-    kycStatus: KycStatus.VERIFIED,
+    kycStatus: KycStatus.APPROVED,
   },
   {
     id: '5',

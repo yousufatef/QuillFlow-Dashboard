@@ -8,16 +8,16 @@ export function groupPermissionsByModule(permissions: PermissionApiRes[]) {
   }, {});
 }
 
-/** Build default form values from the API array (all unchecked). */
+/** Build default form values from the API array. */
 export function buildDefaultPermissions(
   permissions: PermissionApiRes[],
 ): Record<string, PermissionFormValue> {
   return permissions.reduce<Record<string, PermissionFormValue>>((acc, perm) => {
     acc[perm.id] = {
-      canRead: false,
-      canCreate: false,
-      canUpdate: false,
-      canDelete: false,
+      canRead: perm.canRead || false,
+      canCreate: perm.canCreate || false,
+      canUpdate: perm.canUpdate || false,
+      canDelete: perm.canDelete || false,
     };
     return acc;
   }, {});

@@ -37,8 +37,8 @@ function ArticleCard({ index, total, onMoveUp, onMoveDown, onToggle, onDelete }:
 
   return (
     <div className={'b rounded-xl border border-neutral-100 px-4 py-2 shadow-sm'}>
-      <div className='flex w-full items-center gap-1 px-1 py-1'>
-        <div className='flex flex-col'>
+      <div className='flex w-full items-center gap-1 px-1 py-1 justify-between'>
+        <div className='flex flex-col '>
           <div className='flex shrink-0 items-center'>
             <Button
               type='button'
@@ -69,26 +69,27 @@ function ArticleCard({ index, total, onMoveUp, onMoveDown, onToggle, onDelete }:
             >
               <BlogIcons name='ArrowDown' />
             </Button>
+            <Button
+              type='button'
+              variant='ghost'
+              className={`h- min-w-0 flex-1 justify-start gap-2  bg-transparent! px-2 ${!section.isExpanded && collapsedTitle ? " " : "pb-0"} font-normal`}
+              onClick={onToggle}
+              aria-expanded={section.isExpanded}
+            >
+              <span className='type-body-sm text-neutral-400'>{sectionLabel}</span>
+
+
+            </Button>
           </div>
 
           {!section.isExpanded && collapsedTitle && (
-            <span className='type-body-sm-semibold text-neutral-900 text-center'>
+            <span className='type-body-sm-semibold text-neutral-900 text-center mt-1'>
               {collapsedTitle}
             </span>
           )}
         </div>
 
-        <Button
-          type='button'
-          variant='ghost'
-          className={`h- min-w-0 flex-1 justify-start gap-2 bg-transparent! px-2 ${!section.isExpanded && collapsedTitle ? " pb-6" : "pb-0"} font-normal`}
-          onClick={onToggle}
-          aria-expanded={section.isExpanded}
-        >
-          <span className='type-body-sm text-neutral-400'>{sectionLabel}</span>
 
-
-        </Button>
 
         {!isFirst && (
           <span

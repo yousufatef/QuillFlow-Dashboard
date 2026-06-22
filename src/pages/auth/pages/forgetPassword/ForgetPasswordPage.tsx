@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import QuillFlowLogo from '@/assets/svgs/QuillFlow.svg';
+import KaratLogo from '@/assets/svgs/karat-logo.svg';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import CustomPasswordInput from '@/components/forms/CustomPasswordInput';
@@ -126,9 +126,9 @@ function ForgetPasswordPage() {
     <main className='mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-6 px-6'>
       <section className='mx-auto flex h-full flex-col items-center justify-center bg-transparent md:max-w-104'>
         <img
-          src={QuillFlowLogo}
+          src={KaratLogo}
           alt='Karat Logo'
-          className='mb-8 h-20 w-56 sm:h-24 sm:w-64'
+          className='mb-8 h-11 w-40 items-center sm:h-10 sm:w-44'
         />
         <h1 className='type-heading-xl mb-2'>{t('pages.login.titlePassword')}</h1>
         <p className='type-body-lg text-neutral-400'>{t('pages.login.descriptionPassword')}</p>

@@ -13,7 +13,19 @@ export type AppPermissions =
   | 'admins.create'
   | 'admins.read'
   | 'admins.update'
-  | 'admins.delete';
+  | 'admins.delete'
+  | 'roles.create'
+  | 'roles.read'
+  | 'roles.update'
+  | 'roles.delete'
+  | 'users.create'
+  | 'users.read'
+  | 'users.update'
+  | 'users.delete'
+  | 'transactions.create'
+  | 'transactions.read'
+  | 'transactions.update'
+  | 'transactions.delete';
 
 export type Role = {
   id: string;
@@ -45,17 +57,37 @@ export type RolesListApiRes = ListApiResponse<Role[]>;
 
 export type PermissionApiRes = {
   id: string;
-  code: string;
+  permissionCode: string;
   permissionName: string;
   module: string;
-  isActive: boolean;
+  canRead: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
 };
 
 export type RolePayload = {
   nameAr: string;
   nameEn: string;
   permissions: {
-    permissionId: string;
+    id: string;
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }[];
+};
+
+export type RoleApiRes = {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  isActive: boolean;
+  permissions: {
+    id: string;
+    permissionCode: string;
+    permissionName: string;
+    module: string;
     canRead: boolean;
     canCreate: boolean;
     canUpdate: boolean;

@@ -7,7 +7,7 @@ type ArticleStatsInput = {
   }[];
 };
 
-export const calculateArticleStats = ({
+export const calculateArticleStats: any = ({
   titleEn = '',
   descriptionEn = '',
   sections = [],

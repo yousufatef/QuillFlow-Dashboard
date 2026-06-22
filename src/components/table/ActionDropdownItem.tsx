@@ -21,7 +21,7 @@ export default function ActionDropDownBtn({
     <DropdownMenuItem
       variant={variant}
       onClick={onClick}
-      className='flex w-27 items-center justify-start gap-2 px-2 py-2'
+      className='flex w-27 min-w-fit items-center justify-start gap-2 px-2 py-2'
       dir={direction}
     >
       {icon}

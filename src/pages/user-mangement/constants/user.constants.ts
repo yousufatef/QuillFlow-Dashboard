@@ -16,17 +16,22 @@ export const ACCOUNT_STATUS_CONFIG: Record<ActiveStatus, UserStatusConfig> = {
   suspended: {
     labelEn: 'Suspended',
     labelAr: 'موقوف',
-    className: 'bg-neutral-50 text-neutral-400',
+    className: 'bg-neutral-50 text-neutral-900',
   },
 };
 
 export const KYC_STATUS_CONFIG: Record<KycStatus, UserStatusConfig> = {
+  [KycStatusEnum.NONE]: {
+    labelEn: 'Not Submitted',
+    labelAr: 'لم يتم الإرسال',
+    className: 'bg-neutral-50 text-neutral-900',
+  },
   [KycStatusEnum.PENDING]: {
     labelEn: 'Pending',
     labelAr: 'قيد الانتظار',
     className: 'bg-accent-50 text-accent-600',
   },
-  [KycStatusEnum.VERIFIED]: {
+  [KycStatusEnum.APPROVED]: {
     labelEn: 'Verified',
     labelAr: 'موثق',
     className: 'bg-success-50 text-success-500',

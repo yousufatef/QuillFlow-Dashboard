@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { getLanguageDirection, useDirection } from '@/i18n/useDirection';
+import { useLogoutApi } from '@/pages/auth/hooks/useLogoutApi';
 import SidebarIcon from '@/components/shared/icons/SidebarIcon';
-import { useLogout } from '@/pages/auth/hooks/useLogout';
 
 type SidebarUserMenuProps = {
   name: string;
@@ -37,7 +37,8 @@ function SidebarUserMenu({ name, role }: SidebarUserMenuProps) {
   const { t, i18n } = useTranslation();
   const direction = useDirection();
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const { logOut, isLoading } = useLogout();
+  const { logOut, isLoading } = useLogoutApi();
+
   const currentLanguage: AppLanguage = i18n.language === 'ar' ? 'ar' : 'en';
 
   const changeLanguage = async (language: AppLanguage) => {

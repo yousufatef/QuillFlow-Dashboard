@@ -81,6 +81,7 @@ function CustomSelect<TFieldValues extends FieldValues = FieldValues>({
     >
       {(field, fieldState) => (
         <Select
+          key={field.value}
           {...props}
           name={field.name}
           onValueChange={(value) => {

@@ -1,6 +1,4 @@
 import {
-  ACCEPTED_IMAGE_FILE_EXTENSIONS,
-  ACCEPTED_IMAGE_FILE_TYPES,
   ARABIC_TEXT_REGEX,
   ENGLISH_TEXT_REGEX,
   MAX_DESCRIPTION_LENGTH,
@@ -270,18 +268,33 @@ export const passwordSchema = getPasswordSchema();
 
 // ─── Image file upload ────────────────────────────────────────────────────────
 
-const getFileExtension = (file: File) => `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
+const IMAGE_FILE_SIGNATURES = {
+  gif: [0x47, 0x49, 0x46],
+  jpg: [0xff, 0xd8, 0xff],
+  png: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+  webp: [0x52, 0x49, 0x46, 0x46],
+} as const;
 
-export function isAcceptedImageFile(file: File): boolean {
-  if ((ACCEPTED_IMAGE_FILE_TYPES as readonly string[]).includes(file.type)) return true;
+const hasBytesAtOffset = (bytes: Uint8Array, signature: readonly number[], offset = 0) =>
+  signature.every((byte, index) => bytes[index + offset] === byte);
 
-  return (ACCEPTED_IMAGE_FILE_EXTENSIONS as readonly string[]).includes(getFileExtension(file));
+export async function isAcceptedImageFile(file: File): Promise<boolean> {
+  const buffer = await file.slice(0, 12).arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+
+  return (
+    hasBytesAtOffset(bytes, IMAGE_FILE_SIGNATURES.png) ||
+    hasBytesAtOffset(bytes, IMAGE_FILE_SIGNATURES.jpg) ||
+    hasBytesAtOffset(bytes, IMAGE_FILE_SIGNATURES.gif) ||
+    (hasBytesAtOffset(bytes, IMAGE_FILE_SIGNATURES.webp) &&
+      hasBytesAtOffset(bytes, [0x57, 0x45, 0x42, 0x50], 8))
+  );
 }
 
 export function getImageFileTypeErrorMessage(): string {
   return isAr()
-    ? 'يجب أن يكون الملف بصيغة JPG أو PNG أو GIF.'
-    : 'File must be JPG, PNG, or GIF format.';
+    ? 'يجب أن يكون الملف بصيغة JPG أو PNG أو GIF أو WEBP.'
+    : 'File must be JPG, PNG, GIF, or WEBP format.';
 }
 
 export function getImageFileSizeErrorMessage(): string {
@@ -290,8 +303,8 @@ export function getImageFileSizeErrorMessage(): string {
     : `File must not exceed ${MAX_IMAGE_FILE_SIZE_MB}MB.`;
 }
 
-function addImageFileValidationIssues(file: File, ctx: z.RefinementCtx) {
-  if (!isAcceptedImageFile(file)) {
+async function addImageFileValidationIssues(file: File, ctx: z.RefinementCtx) {
+  if (!(await isAcceptedImageFile(file))) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: getImageFileTypeErrorMessage(),
@@ -313,18 +326,18 @@ export function getImageFileSchema() {
         message: isAr() ? 'الحقل مطلوب.' : 'Field is required.',
       }),
     })
-    .superRefine((file, ctx) => {
-      addImageFileValidationIssues(file, ctx);
+    .superRefine(async (file, ctx) => {
+      await addImageFileValidationIssues(file, ctx);
     });
 }
 
 export function getNullableImageFileSchema() {
   return z
     .union([z.instanceof(File), z.null()])
-    .superRefine((file, ctx) => {
+    .superRefine(async (file, ctx) => {
       if (!file) return;
 
-      addImageFileValidationIssues(file, ctx);
+      await addImageFileValidationIssues(file, ctx);
     });
 }
 

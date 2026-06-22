@@ -38,17 +38,18 @@ export interface AdminRolesResponse {
 }
 
 export type AssignedRole = {
-   id: string;
-    nameEn: string;
-    nameAr: string;
-    assignedPermissions:AssignedPermission[]
-}
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  isActive?: boolean;
+  assignedPermissions: AssignedPermission[];
+};
 export type AssignedPermission = {
   permissionId: string;
   permissionCode: string;
   permissionNameAr: string;
   permissionNameEn: string;
-  permissionName:string;
+  permissionName: string;
   moduleEn: string;
   moduleAr: string;
   canRead: boolean;

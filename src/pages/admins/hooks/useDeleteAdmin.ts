@@ -9,7 +9,6 @@ export const useDeleteAdmin = () => {
     onSuccess: (res: any) => {
       const message = res?.message || 'Delete admin successfully';
       toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['adminsList'] });
       queryClient.invalidateQueries({ queryKey: ['admin'] });
     },
     // onError: (error: any) => {

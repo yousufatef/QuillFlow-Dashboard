@@ -1,6 +1,6 @@
-export const TOKEN = 'QuillFlow_token';
-export const REFRESH_TOKEN = 'QuillFlow_refresh_token';
-export const USER_VERIFIED = 'QuillFlow_user_verified';
+export const TOKEN = 'karak_token';
+export const REFRESH_TOKEN = 'karak_refresh_token';
+export const USER_VERIFIED = 'karak_user_verified';
 
 export const MIN_TITLE_LENGTH = 2;
 export const MAX_TITLE_LENGTH = 100;
@@ -10,9 +10,9 @@ export const MAX_DESCRIPTION_LENGTH = 2000;
 export const MAX_IMAGE_FILE_SIZE_MB = 5;
 export const MAX_IMAGE_FILE_SIZE_BYTES = MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 
-/** JPG, PNG, or GIF */
-export const ACCEPTED_IMAGE_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'] as const;
-export const ACCEPTED_IMAGE_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif'] as const;
+/** JPG, PNG, GIF, or WEBP */
+export const ACCEPTED_IMAGE_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
+export const ACCEPTED_IMAGE_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp'] as const;
 
 /** Latin letters, digits, and common punctuation. */
 export const ENGLISH_TEXT_REGEX =

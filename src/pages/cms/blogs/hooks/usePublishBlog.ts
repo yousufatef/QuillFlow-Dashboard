@@ -18,13 +18,13 @@ export const usePublishBlog = (onSuccess?: () => void) => {
         toast.success(res?.message || 'Published successfully');
       }, 100);
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to publish blog';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to publish blog';
+    //   toast.error(message);
+    // }
   });
 
   return { publishBlog, isLoading: isPending };

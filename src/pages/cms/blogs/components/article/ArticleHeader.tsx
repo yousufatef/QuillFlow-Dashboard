@@ -23,7 +23,7 @@ export function ArticleHeader({ onAddSection, canAddSection, error }: ArticleHea
           size='sm'
           onClick={onAddSection}
           disabled={!canAddSection}
-          className='type-body-md primary-500 border-primary-500 rounded'
+          className='type-body-md text-primary-500 border-primary-500 rounded bg-white'
         >
           <BlogIcons name='add' />
           {t("forms.buttonLabels.add_section")}

@@ -8,24 +8,18 @@ import { Form } from '@/components/ui/form';
 import { useTranslation } from 'react-i18next';
 import CustomSection from '@/components/shared/customs/CustomSection';
 import CustomCard from '@/components/shared/customs/CustomCard';
-import type { RolePayload } from '@/types/permissions-types';
 import { Accordion } from '@/components/ui/accordion';
 import PermissionModuleCard from './components/roleForm/PermissionModuleCard';
 import PageLayout from '@/components/layout/PageLayout';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { buildDefaultPermissions, groupPermissionsByModule } from '@/utils/permissions';
 import MainLoader from '@/components/shared/loader/MainLoader';
-import {
-  addRoleApi,
-  getAllPermissions,
-  getRoleDetails,
-  PERMISSIONS_QUERY_KEY,
-  ROLE_DETAILS_QUERY_KEY,
-  updateRoleApi,
-} from '@/services/roles.service';
 import LoadingOverlay from '@/components/shared/loader/LoadingOverlay';
-import { toast } from '@/lib/toast';
 import { titleArSchema, titleEnSchema } from '@/utils/schemas';
+import UseCreateRole from '@/hooks/permissions/UseCreateRole';
+import useUpdateRole from '@/hooks/permissions/useUpdateRole';
+import useGetPermissions from '@/hooks/permissions/useGetPermissions';
+import useRoleDetails from '@/hooks/permissions/useRoleDetails';
+import LoadingError from '@/components/shared/error/LoadingError';
 
 const permissionValueSchema = z.object({
   canRead: z.boolean(),
@@ -52,36 +46,24 @@ export default function RoleForm({ roleId }: RoleFormProps) {
   const isEdit = !!roleId;
 
   const {
-    data: permissionsRes,
-    isLoading: isLoadingPermissions,
-    isFetched: isPermissionsFetched,
-  } = useQuery({
-    queryKey: [PERMISSIONS_QUERY_KEY],
-    queryFn: () => getAllPermissions(),
-    enabled: !roleId,
-  });
+    permissionsRes,
+    isLoadingPermissions,
+    isPermissionsFetched,
+    permissionError,
+    refetchPermissions,
+  } = useGetPermissions();
 
-  const { data, isLoading: isLoadingRole } = useQuery({
-    queryKey: [ROLE_DETAILS_QUERY_KEY, roleId],
-    queryFn: () => getRoleDetails(roleId as string),
-    enabled: !!roleId,
-  });
+  const { data, isLoadingRole, isRoleFetched, roleError, refetchRole } = useRoleDetails(
+    roleId || '',
+  );
 
   const role = data?.data;
 
-  const { mutateAsync: addRole, isPending: isAddingRole } = useMutation({
-    mutationFn: addRoleApi,
-    onSuccess: () => navigate('/settings/roles'),
-    onError: (err) => toast.error(err.message),
-  });
+  const { addRole, isAddingRole } = UseCreateRole();
 
-  const { mutateAsync: updateRole, isPending: isUpdatingRole } = useMutation({
-    mutationFn: (role: RolePayload) => updateRoleApi(roleId!, role),
-    onSuccess: () => navigate('/settings/roles'),
-    onError: (err) => toast.error(err.message),
-  });
+  const { updateRole, isUpdatingRole } = useUpdateRole(roleId || '');
 
-  const apiPermissions = permissionsRes?.data;
+  const apiPermissions = isEdit ? role?.permissions : permissionsRes?.data;
 
   const form = useForm<RoleFormValues>({
     resolver: zodResolver(roleSchema),
@@ -94,11 +76,15 @@ export default function RoleForm({ roleId }: RoleFormProps) {
     reValidateMode: 'onChange',
   });
 
+  const { isSubmitting, isSubmitSuccessful, isValid, isDirty } = form.formState;
+  const isPrmiaryBtnDisabled = isSubmitting || isSubmitSuccessful || !isValid || !isDirty;
+  const isCancelDisabled = isSubmitting || isSubmitSuccessful;
+
   const onSubmit = async (data: RoleFormValues) => {
     // Convert the record back to an array for the API
     const permissionsPayload = Object.entries(data.permissions)
       .filter(([, perm]) => perm.canRead || perm.canCreate || perm.canUpdate || perm.canDelete)
-      .map(([id, perm]) => ({ permissionId: id, ...perm }));
+      .map(([id, perm]) => ({ id, ...perm }));
 
     const payload = {
       nameEn: data.nameEN,
@@ -114,14 +100,24 @@ export default function RoleForm({ roleId }: RoleFormProps) {
   };
 
   useEffect(() => {
-    if (!isLoadingPermissions && isPermissionsFetched) {
-      form.reset({
-        nameEN: role?.nameEn || '',
-        nameAR: role?.nameAr || '',
-        permissions: buildDefaultPermissions(apiPermissions!),
-      });
+    if (isEdit) {
+      if (!isLoadingRole && isRoleFetched) {
+        form.reset({
+          nameEN: role?.nameEn || '',
+          nameAR: role?.nameAr || '',
+          permissions: buildDefaultPermissions(role?.permissions ?? []),
+        });
+      }
+    } else {
+      if (!isLoadingPermissions && isPermissionsFetched) {
+        form.reset({
+          nameEN: '',
+          nameAR: '',
+          permissions: buildDefaultPermissions(permissionsRes?.data ?? []),
+        });
+      }
     }
-  }, [isLoadingPermissions, isPermissionsFetched]);
+  }, [isEdit, isLoadingPermissions, isPermissionsFetched, isLoadingRole, isRoleFetched]);
 
   const permissionsByModule = useMemo(
     () => groupPermissionsByModule(apiPermissions || []),
@@ -129,6 +125,21 @@ export default function RoleForm({ roleId }: RoleFormProps) {
   );
 
   if (isLoadingRole) return <MainLoader />;
+  if (roleError)
+    return (
+      <LoadingError
+        errorMsg={roleError.message}
+        onRefetch={refetchRole}
+      />
+    );
+
+  if (permissionError)
+    return (
+      <LoadingError
+        errorMsg={permissionError.message}
+        onRefetch={refetchPermissions}
+      />
+    );
 
   return (
     <Form {...form}>
@@ -144,11 +155,15 @@ export default function RoleForm({ roleId }: RoleFormProps) {
           primaryLabel={isEdit ? t('roles.form.update') : t('roles.form.create')}
           secondaryLabel={t('roles.form.cancel')}
           onSecondaryClick={() => {
-            // Trigger navigation — if dirty, the blocker will automatically intercept and show the dialog
             navigate(-1);
           }}
-          isPrimaryLoading={isAddingRole || isUpdatingRole}
-          isSecondaryLoading={isAddingRole || isUpdatingRole}
+          primaryButtonProps={{
+            disabled: isPrmiaryBtnDisabled,
+          }}
+          secondaryButtonProps={{
+            disabled: isCancelDisabled,
+          }}
+          isPrimaryLoading={isSubmitting}
         >
           <div className='relative'>
             {(isAddingRole || isUpdatingRole) && <LoadingOverlay />}

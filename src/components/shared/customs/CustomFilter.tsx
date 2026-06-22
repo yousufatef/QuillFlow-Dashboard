@@ -147,7 +147,7 @@ export default CustomSelectorFilter;
 {
   /* <CustomSelectorFilter
     fildName="sort"
-    placeholder={t('filters.sortBy')}
+    placeholder={t('common.filters.sortBy')}
     label=""
     items={[
         { value: 'asc', label: 'Ascending', labelEn: 'Name (A-Z)', labelAr: 'الاسم (أ-ي)' },

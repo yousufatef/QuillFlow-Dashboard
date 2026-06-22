@@ -5,6 +5,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 // import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/utils/FormatDate';
 import ActiveSwitch from '../ActiveSwitch';
+import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 
 export const getColumns = (t: (key: string) => string, direction: 'ltr' | 'rtl'): ColumnDef<Admin>[] => [
   {
@@ -45,6 +46,6 @@ export const getColumns = (t: (key: string) => string, direction: 'ltr' | 'rtl')
   {
     accessorKey: 'actions',
     header: t('table.more'),
-    cell: ({ row: { original: admin } }) => <ActionButton admin={admin} />,
+    cell: ({ row: { original: admin } }) => <WithPermissions permissions={['admins.update', 'admins.delete']} require="some"> <ActionButton admin={admin} /></WithPermissions>,
   },
 ];

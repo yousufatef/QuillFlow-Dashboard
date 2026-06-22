@@ -11,7 +11,7 @@ const UserStatusBadge = ({ config }: UserStatusBadgeProps) => {
 
   return (
     <span
-      className={`inline-flex items-center rounded-[8px] px-4 py-2 text-xs font-medium ${config.className}`}
+      className={`inline-flex max-w-fit items-center rounded-[8px] px-4 py-2 text-xs font-medium ${config.className}`}
     >
       {isEnglish ? config.labelEn : config.labelAr}
     </span>

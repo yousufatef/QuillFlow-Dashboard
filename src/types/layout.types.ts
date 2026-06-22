@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react';
 import type { Sidebar } from '@/components/ui/sidebar';
+import type { AppPermissions } from './permissions-types';
 
 // ─── Primitive types ──────────────────────────────────────────────────────────
 export type MainModeProps = {
@@ -36,6 +37,7 @@ export type SidebarSide = ComponentProps<typeof Sidebar>['side'];
 export type SubNavItem = {
   title: string;
   href: string;
+  permissions?: AppPermissions[];
 };
 
 // ─── Component prop types ─────────────────────────────────────────────────────

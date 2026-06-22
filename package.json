@@ -10,7 +10,9 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "format": "npx prettier . --write",
-    "format:check": "npx prettier . --check"
+    "format:check": "npx prettier . --check",
+    "validate-translations": "node scripts/validate-translations.js",
+    "prepare": "husky || echo husky skipped"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -55,9 +57,19 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.1",
     "vite": "^8.0.10"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "node scripts/validate-translations.js"
+    ],
+    "src/i18n/locales/*.json": [
+      "node scripts/validate-translations.js --all"
+    ]
   }
 }

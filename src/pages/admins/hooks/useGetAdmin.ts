@@ -8,5 +8,5 @@ export const useAdmin = (id: string, enabled = true) => {
     enabled: enabled && !!id,
   });
 
-  return { adminData: data?.data?.result, isLoading, error };
+  return { adminData: data?.data, isLoading, error };
 };

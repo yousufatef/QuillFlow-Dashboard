@@ -13,13 +13,13 @@ export const useToggleBlogStatus = () => {
       queryClient.invalidateQueries({ queryKey: ['blogsList'] });
       queryClient.invalidateQueries({ queryKey: ['blog'] });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to change blog status';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to change blog status';
+    //   toast.error(message);
+    // }
   });
   return { toggleStatus, isLoading: isPending };
 };

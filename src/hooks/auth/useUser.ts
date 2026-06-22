@@ -14,11 +14,7 @@ export function useUser() {
 
   const isAuthenticated = !!token || !!refreshToken;
 
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery<UserApiResponse, Error>({
+  const { data, isLoading, isError } = useQuery<UserApiResponse, Error>({
     queryKey: [USER_DETAILS_QUERY_KEY],
     queryFn: getUserDetails,
     enabled: isAuthenticated,
@@ -26,9 +22,11 @@ export function useUser() {
     gcTime: Infinity,
   });
 
+  const user = data?.data;
+
   const permissionSet: Set<AppPermissions> = useMemo(
-    () => new Set(user?.permissions ?? ['admins.update', 'admins.delete']),
-    [user?.permissions],
+    () => new Set(user?.permission || []),
+    [user?.permission],
   );
 
   return {

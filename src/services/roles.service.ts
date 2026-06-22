@@ -3,6 +3,7 @@ import { generateQueryParams } from '@/utils/params';
 import type {
   PermissionApiRes,
   Role,
+  RoleApiRes,
   RolePayload,
   RolesListApiRes,
 } from '@/types/permissions-types';
@@ -16,8 +17,8 @@ export async function getRoles(params: QueryParams): Promise<RolesListApiRes> {
 }
 
 export const ROLE_DETAILS_QUERY_KEY = 'role-details';
-export const getRoleDetails = async (roleId: string): Promise<ApiResponse<Role>> => {
-  return apiRequest(`/roles/${roleId}`, {
+export const getRoleDetails = async (roleId: string): Promise<ApiResponse<RoleApiRes>> => {
+  return apiRequest(`/identity/admin/roles/${roleId}`, {
     method: 'GET',
   });
 };
@@ -29,7 +30,7 @@ export const getAllPermissions = async (): Promise<ApiResponse<PermissionApiRes[
   });
 };
 
-export const addRoleApi = async (role: RolePayload) => {
+export const addRoleApi = async (role: RolePayload): Promise<ApiResponse<Role>> => {
   return apiRequest('/identity/admin/roles', {
     method: 'POST',
     body: role,
@@ -39,10 +40,13 @@ export const addRoleApi = async (role: RolePayload) => {
   });
 };
 
-export const updateRoleApi = async (roleId: string, role: RolePayload) => {
+export const updateRoleApi = async (
+  roleId: string,
+  role: RolePayload,
+): Promise<ApiResponse<Role>> => {
   return apiRequest(`/identity/admin/roles/${roleId}`, {
     method: 'PUT',
-    body: JSON.stringify(role),
+    body: role,
     headers: {
       'Content-Type': 'application/json',
     },

@@ -1,8 +1,10 @@
+import type { ApiResponse } from '@/types/index.t';
 import type { AppPermissions } from '../../../types/permissions-types';
 
 export type ValidationErrorApiResponse = {
-  errors: Record<string, string[]>;
-  status: number;
+  errors: Record<string, string[]> | string[];
+  status?: number;
+  statusCode?: number;
 };
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -11,19 +13,16 @@ export type ApiRequestOptions = Omit<RequestInit, 'method' | 'body'> & {
   method?: HttpMethod;
   body?: unknown;
   skipAuth?: boolean;
+  showErrorToast?: boolean;
 };
 
-export type ApiErrorResponse =
-  | {
-      isError?: boolean;
-      message?: string;
-    }
-  | {
-      isError?: boolean;
-      message?: string;
-      status: number;
-      errors: Record<string, string[]>;
-    };
+export type ApiErrorResponse = {
+  isSuccess?: boolean;
+  message?: string | null;
+  status?: number;
+  statusCode?: number;
+  errors?: Record<string, string[]> | string[] | null;
+};
 
 export type ApiResult<T> = {
   result?: T;
@@ -34,21 +33,31 @@ export type LoginParams = {
   password: string;
 };
 
-export type LoginResponse = {
-  userId: string;
-  email: string;
-  phone: string;
-  userName: string;
-  fullName: string;
+export interface LoginResponse {
+  isSuccess: boolean;
+  data: LoginData;
+  isVerified?: boolean;
+  message: string | null;
+  errors: string[] | null;
+  statusCode: number;
+}
+
+export interface LoginData {
   accessToken: string;
   refreshToken: string;
   accessTokenExpiresAt: string;
-  refreshTokenExpiresAt: string;
-  roles: string[];
-  isVerified: boolean;
-  hasPin: boolean;
-  message?: string;
-};
+  refreshTokenExpiresAt?: string;
+  admin: Admin;
+  isVerified?: boolean;
+}
+
+export interface Admin {
+  adminId: string;
+  fullName: string;
+  email: string;
+  isSuperAdmin: boolean;
+  permission: AppPermissions[];
+}
 
 export type RefreshTokenResponse = {
   token?: string;
@@ -94,17 +103,18 @@ export type EditPasswordParams = {
   confirmPassword: string;
 };
 
-export type UserApiResponse = {
+export type UserApiResponse = ApiResponse<{
   userId: string;
   email: string;
   phone: string;
   userName: string;
   fullName: string;
+  roleName: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpiresAt: string;
   refreshTokenExpiresAt: string;
   profilePicture: string;
-  permissions: AppPermissions[];
+  permission: AppPermissions[];
   isVerified: boolean;
-};
+}>;

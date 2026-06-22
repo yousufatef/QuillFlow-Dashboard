@@ -55,6 +55,15 @@ export async function getAdminsRolesListApi(
 
   return res as AdminRolesResponse;
 }
+export async function getAdminRolesPermissionsListApi(
+) {
+  const res = await apiRequest(
+    `/identity/admin/roles/all`,
+    { method: 'GET' },
+  );
+
+  return res
+}
 
 export async function changeAdminStatusApi(id: string, isActive: boolean) {
   const res = await apiRequest(

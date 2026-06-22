@@ -27,16 +27,16 @@ export type FieldLayoutProps<TFieldValues extends FieldValues = FieldValues> = {
   htmlFor?: string;
   labelClassName?: string;
 } & (
-    | {
+  | {
       children: (
         field: ControllerRenderProps<TFieldValues, FieldPath<TFieldValues>>,
         fieldState: ControllerFieldState,
       ) => ReactNode;
     }
-    | {
+  | {
       children: ReactNode;
     }
-  );
+);
 
 function FieldLayout<TFieldValues extends FieldValues = FieldValues>({
   control,
@@ -51,7 +51,7 @@ function FieldLayout<TFieldValues extends FieldValues = FieldValues>({
   labelClassName,
   children,
 }: FieldLayoutProps<TFieldValues>) {
-  const { t } = useTranslation('common.labels');
+  const { t } = useTranslation();
   const messageId = useId();
   const requiredMessage = `${label ?? 'This field'} is required`;
 
@@ -72,11 +72,15 @@ function FieldLayout<TFieldValues extends FieldValues = FieldValues>({
             <FieldLabel
               onClick={(e) => e.preventDefault()}
               htmlFor={htmlFor ?? field.name}
-              className={cn(formFieldStyles.label, labelClassName)}
+              className={cn(
+                formFieldStyles.label,
+                labelClassName,
+                'type-body-sm ms-4 font-bold text-neutral-900',
+              )}
             >
               {label}{' '}
               {optional ? (
-                <span className='type-body-sm-semibold text-neutral-900'>{t('optional')}</span>
+                <span className='type-body-sm-semibold text-neutral-900'>{t('common.optional')}</span>
               ) : required ? (
                 <span>&#42;</span>
               ) : (
@@ -93,13 +97,11 @@ function FieldLayout<TFieldValues extends FieldValues = FieldValues>({
 
           <div className='flex flex-col'>
             {typeof children === 'function' ? children(field, fieldState) : children}
-            <div className="min-h-5 py-1">
-              <FieldMessage
-                error={fieldState.error?.message}
-                helperText={hint}
-                id={messageId}
-              />
-            </div>
+            <FieldMessage
+              error={fieldState.error?.message}
+              helperText={hint}
+              id={messageId}
+            />
           </div>
         </Field>
       )}

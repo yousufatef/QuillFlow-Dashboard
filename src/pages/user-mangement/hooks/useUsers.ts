@@ -14,11 +14,11 @@ export const useUsers = () => {
   });
 
   return {
-    users: data?.result?.result,
+    users: data?.data?.result,
     isLoading,
     isFetching,
     error,
     isPlaceholderData,
-    totalCount: data?.result?.totalCount ?? 0,
+    totalCount: data?.data?.totalCount ?? 0,
   };
 };

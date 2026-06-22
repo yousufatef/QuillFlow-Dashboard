@@ -12,13 +12,13 @@ export const useCreateBlog = () => {
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ['blogsList'] });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to create blog';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to create blog';
+    //   toast.error(message);
+    // }
   });
   return { createBlog, isLoading: isPending };
 };

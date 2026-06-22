@@ -19,7 +19,11 @@ export function ArticleStats({ readTime }: ArticleStatsProps) {
 
       <div className='flex items-center gap-1.5 rounded-lg bg-neutral-50 px-4 py-2 text-xs text-neutral-900'>
         <BlogIcons name='clock' />
-        <span>{readTime} {isEnglish ? 'min read' : 'دقيقة قراءة'}</span>
+        <span>
+          {readTime <= 0
+            ? "ــــ"
+            : `${readTime} ${isEnglish ? 'min read' : 'دقيقة قراءة'}`}
+        </span>
       </div>
     </div>
   );

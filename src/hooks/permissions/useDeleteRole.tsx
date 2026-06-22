@@ -1,20 +1,34 @@
 import { deleteRoleApi, ROLES_LIST_QUERY_KEY } from '@/services/roles.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { toast } from 'sonner';
-export const useDeleteRole = ({ onSuccess }: { onSuccess?: () => void }) => {
+import { useTranslation } from 'react-i18next';
+
+export const useDeleteRole = () => {
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const { t } = useTranslation();
+
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['role'],
     mutationFn: (id: string) => deleteRoleApi(id),
     onSuccess: (res: any) => {
-      const message = res?.message || 'Role deleted successfully';
+      const message = res?.message || t('roles.actions.deleteSuccess');
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: [ROLES_LIST_QUERY_KEY] });
-      onSuccess?.();
+      setIsDeleteOpen(false);
     },
-    onError: (error: any) => {
-      toast.error(error?.message || 'Failed to delete role');
+    onError: (error: Error) => {
+      const statusCode = error.cause as number;
+      if (statusCode === 404) {
+        setIsDeleteOpen(false);
+        toast.info(t('roles.actions.alreadyDeleted'), {
+          dismissible: true,
+        });
+        queryClient.invalidateQueries({ queryKey: [ROLES_LIST_QUERY_KEY] });
+        return;
+      }
+      toast.error(error?.message || t('roles.actions.deleteFailed'));
     },
   });
-  return mutation;
+  return { ...mutation, isDeleteOpen, setIsDeleteOpen };
 };

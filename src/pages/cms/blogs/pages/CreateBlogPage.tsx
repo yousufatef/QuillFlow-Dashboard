@@ -35,7 +35,7 @@ function CreateBlogPage() {
   const handleSaveAsDraft = async () => {
     form.clearErrors([...draftRequiredFields, 'sections']);
     const basicInfoSchema = getBasicInfoSchema(t, false);
-    const basicInfoResult = basicInfoSchema.safeParse(form.getValues());
+    const basicInfoResult = await basicInfoSchema.safeParseAsync(form.getValues());
 
     if (!basicInfoResult.success) {
       basicInfoResult.error.issues.forEach((issue) => {

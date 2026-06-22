@@ -1,15 +1,14 @@
 import Cookies from 'js-cookie';
+import { toast } from '@/lib/toast';
 import { REFRESH_TOKEN, TOKEN } from '../constants';
 import { removeAuthCookies } from './cookies';
-import { getCurrLocale } from './language';
-import { concatErrors } from './errors';
 import type {
   ApiErrorResponse,
   ApiRequestOptions,
-  ApiResult,
   RefreshTokenResponse,
-  ValidationErrorApiResponse,
 } from '../types/auth.types';
+import { trimStringValues } from './input';
+import { getCurrLocale } from './language';
 
 const API_URL_RAW = import.meta.env.VITE_BASE_URL as string | undefined;
 
@@ -21,72 +20,14 @@ const API_URL: string = API_URL_RAW;
 
 let refreshTokenPromise: Promise<string | null> | null = null;
 
-// --- Exported form helpers ---
-
-const isPlainObject = (value: unknown): value is Record<string, unknown> => {
-  if (value === null || typeof value !== 'object') return false;
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === Object.prototype || prototype === null;
+type ApiEnvelope<T> = ApiErrorResponse & {
+  data?: T;
+  result?: T;
 };
 
-export const trimStringValues = <T>(obj: T): T => {
-  if (typeof obj === 'string') return obj.trim() as T;
-
-  if (Array.isArray(obj)) {
-    return (obj as unknown[]).map((item) => trimStringValues(item)) as T;
-  }
-
-  if (isPlainObject(obj)) {
-    const result: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(obj)) {
-      result[key] = trimStringValues(value);
-    }
-    return result as T;
-  }
-
-  return obj;
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return value !== null && typeof value === 'object';
 };
-
-export const InputTrimmer = (value: unknown) => {
-  if (typeof value === 'string') {
-    // Preserve line breaks while removing excessive spaces on each line
-    return value
-      .split('\n')
-      .map(line => line.replace(/ {2,}/g, ' ').trimStart())
-      .join('\n');
-  }
-  return value;
-};
-
-// --- Auth ---
-
-function getAuthToken() {
-  return Cookies.get(TOKEN);
-}
-
-function getRefreshToken() {
-  return Cookies.get(REFRESH_TOKEN);
-}
-
-function redirectToSignin() {
-  removeAuthCookies();
-  const returnUrl = window.location.pathname + window.location.search;
-  window.location.href = `/login?callbackUrl=${encodeURIComponent(returnUrl)}`;
-}
-
-function setCookieWithOptionalExpiry(name: string, value: string, expiresAt?: string) {
-  Cookies.set(name, value, expiresAt ? { expires: new Date(expiresAt) } : undefined);
-}
-
-/** Unwrap `{ result: T }` envelopes returned by some API endpoints. */
-function unwrapApiResult<T>(response: T | ApiResult<T>): T {
-  if (response !== null && typeof response === 'object' && 'result' in response) {
-    return (response as ApiResult<T>).result as T;
-  }
-  return response as T;
-}
-
-// --- Request building ---
 
 function buildUrl(endpoint: string): string {
   const base = API_URL.replace(/\/+$/, '');
@@ -99,11 +40,10 @@ function serializeBody(body: unknown): BodyInit | undefined {
   return body instanceof FormData ? body : JSON.stringify(trimStringValues(body));
 }
 
-function buildHeaders(options: ApiRequestOptions, tokenOverride?: string): Headers {
+function buildHeaders(options: ApiRequestOptions, token?: string): Headers {
   const headers = new Headers(options.headers);
-  headers.set('x-lang', getCurrLocale());
+  headers.set('Language', getCurrLocale());
 
-  const token = tokenOverride ?? getAuthToken();
   if (!options.skipAuth && token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
@@ -120,33 +60,43 @@ function buildHeaders(options: ApiRequestOptions, tokenOverride?: string): Heade
   return headers;
 }
 
-function doFetch(
+function request(
   endpoint: string,
   options: ApiRequestOptions & { signal?: AbortSignal },
-  tokenOverride?: string,
+  token = Cookies.get(TOKEN),
 ): Promise<Response> {
-  const { method = 'GET', body, skipAuth: _skipAuth, ...fetchInit } = options;
+  const {
+    method = 'GET',
+    body,
+    skipAuth: _skipAuth,
+    showErrorToast: _showErrorToast,
+    ...fetchInit
+  } = options;
 
   return fetch(buildUrl(endpoint), {
     ...fetchInit,
     method,
-    headers: buildHeaders(options, tokenOverride),
+    headers: buildHeaders(options, token),
     body: serializeBody(body),
   });
 }
 
-// --- Response handling ---
+function getErrorMessage(data: ApiErrorResponse | null, fallback = 'Something went wrong'): string {
+  if (!data) return fallback;
 
-function isValidationError(data: ApiErrorResponse | null): data is ValidationErrorApiResponse {
-  return Boolean(data && 'errors' in data && data.errors);
+  if (Array.isArray(data.errors) && data.errors.length > 0) {
+    return data.errors.join('\r\n');
+  }
+
+  if (isObject(data.errors)) {
+    const message = Object.values(data.errors).flat().join('\r\n');
+    if (message) return message;
+  }
+
+  return data.message || fallback;
 }
 
-function getErrorMessage(data: ApiErrorResponse | null, fallback: string): string {
-  if (isValidationError(data)) return concatErrors(data);
-  return data?.message ?? fallback;
-}
-
-async function parseJsonBody<T>(response: Response): Promise<T | null> {
+async function parseJson<T>(response: Response): Promise<T | null> {
   const contentType = response.headers.get('content-type');
   if (!contentType?.includes('application/json')) return null;
 
@@ -157,84 +107,94 @@ async function parseJsonBody<T>(response: Response): Promise<T | null> {
   }
 }
 
-async function throwIfHttpError(response: Response): Promise<void> {
+function throwRequestError(message: string, status?: number, showToast = true): never {
+  if (showToast) toast.error(message);
+  throw new Error(message, { cause: status });
+}
+
+async function handleResponse<T>(response: Response, showToast = true): Promise<T> {
+  const data = await parseJson<T & ApiErrorResponse>(response);
+
   if (!response.ok) {
-    const errorData = await parseJsonBody<ApiErrorResponse>(response);
-    throw new Error(getErrorMessage(errorData, `Request failed with status ${response.status}`));
+    throwRequestError(
+      getErrorMessage(data, `Request failed with status ${response.status}`),
+      response.status,
+      showToast,
+    );
   }
+
+  if (data?.isSuccess === false) {
+    throwRequestError(getErrorMessage(data), data.statusCode ?? data.status, showToast);
+  }
+
+  return data as T;
 }
 
-function throwIfApiError<T extends ApiErrorResponse>(data: T | null): asserts data is T {
-  if (!data) throw new Error('Empty response from server');
-  if (data.isError) throw new Error(data.message || 'Something went wrong');
+function getPayload<T>(response: T | ApiEnvelope<T>): T {
+  const result = isObject(response) && 'result' in response ? response.result : response;
+  return isObject(result) && 'data' in result ? (result.data as T) : (result as T);
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
-  await throwIfHttpError(response);
-  const data = await parseJsonBody<T & ApiErrorResponse>(response);
-  throwIfApiError(data);
-  return data;
-}
-
-// --- Token refresh ---
-
-function storeRefreshedTokens(data: RefreshTokenResponse): string | null {
-  const accessToken = data.token ?? data.accessToken;
+function saveTokens(data: RefreshTokenResponse): string | null {
+  const accessToken = data.accessToken ?? data.token;
   if (!accessToken) return null;
 
-  setCookieWithOptionalExpiry(
-    TOKEN,
-    accessToken,
-    data.accessTokenExpiresAt ?? data.accessTokenExpiryTime,
-  );
+  Cookies.set(TOKEN, accessToken, {
+    expires: getExpiryDate(data.accessTokenExpiresAt ?? data.accessTokenExpiryTime),
+  });
 
   if (data.refreshToken) {
-    setCookieWithOptionalExpiry(
-      REFRESH_TOKEN,
-      data.refreshToken,
-      data.refreshTokenExpiresAt ?? data.refreshTokenExpiryTime,
-    );
+    Cookies.set(REFRESH_TOKEN, data.refreshToken, {
+      expires: getExpiryDate(data.refreshTokenExpiresAt ?? data.refreshTokenExpiryTime),
+    });
   }
 
   return accessToken;
 }
 
+function getExpiryDate(value?: string): Date | undefined {
+  return value ? new Date(value) : undefined;
+}
+
+function redirectToSignin(): void {
+  removeAuthCookies();
+  const returnUrl = window.location.pathname + window.location.search;
+  window.location.href = `/login?callbackUrl=${encodeURIComponent(returnUrl)}`;
+}
+
 async function refreshAccessToken(): Promise<string | null> {
-  const refreshToken = getRefreshToken();
+  const refreshToken = Cookies.get(REFRESH_TOKEN);
   if (!refreshToken) return null;
 
-  const response = await fetch(buildUrl('auth/refresh'), {
+  const response = await fetch(buildUrl('identity/admin/auth/refresh-token'), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Language: getCurrLocale() },
-    body: JSON.stringify({ accessToken: getAuthToken(), refreshToken }),
+    headers: {
+      Authorization: `Bearer ${Cookies.get(TOKEN)}`,
+      'Content-Type': 'application/json',
+      Language: getCurrLocale(),
+    },
+    body: JSON.stringify({ refreshToken: refreshToken }),
   });
 
-  if (!response.ok) {
+  const data = await parseJson<ApiEnvelope<RefreshTokenResponse>>(response);
+  if (!response.ok || !data || data.isSuccess === false) {
     removeAuthCookies();
     return null;
   }
 
-  const data = unwrapApiResult(
-    (await response.json()) as RefreshTokenResponse | ApiResult<RefreshTokenResponse>,
-  );
-
-  return storeRefreshedTokens(data);
+  return saveTokens(getPayload<RefreshTokenResponse>(data));
 }
 
-async function getFreshToken(): Promise<string | null> {
-  refreshTokenPromise ??= refreshAccessToken().finally(() => {
-    refreshTokenPromise = null;
-  });
+function getFreshToken(): Promise<string | null> {
+  refreshTokenPromise ??= refreshAccessToken().finally(() => (refreshTokenPromise = null));
   return refreshTokenPromise;
 }
-
-// --- Public API ---
 
 export async function apiRequest<T>(
   endpoint: string,
   options: ApiRequestOptions & { signal?: AbortSignal } = {},
 ): Promise<T> {
-  const response = await doFetch(endpoint, options);
+  const response = await request(endpoint, options);
 
   if (response.status === 401 && !options.skipAuth) {
     const newToken = await getFreshToken();
@@ -242,41 +202,9 @@ export async function apiRequest<T>(
       redirectToSignin();
       throw new Error('Session expired. Please sign in again.');
     }
-    return handleResponse<T>(await doFetch(endpoint, options, newToken));
+
+    return handleResponse<T>(await request(endpoint, options, newToken), options.showErrorToast);
   }
 
-  return handleResponse<T>(response);
-}
-
-/**
- * Run multiple API requests in parallel. All must succeed.
- *
- * @example
- * const [users, posts] = await apiParallel(
- *   apiRequest<User[]>('users'),
- *   apiRequest<Post[]>('posts'),
- * );
- */
-export function apiParallel<T extends Promise<unknown>[]>(
-  ...requests: T
-): Promise<{ -readonly [K in keyof T]: Awaited<T[K]> }> {
-  return Promise.all(requests);
-}
-
-/**
- * Run multiple API requests in parallel. Returns results even if some fail.
- *
- * @example
- * const [userResult, postResult] = await apiAllSettled(
- *   apiRequest<User>('users/1'),
- *   apiRequest<Post>('posts/1'),
- * );
- * if (userResult.status === 'fulfilled') console.log(userResult.value);
- */
-export function apiAllSettled<T extends Promise<unknown>[]>(
-  ...requests: T
-): Promise<{
-  -readonly [K in keyof T]: PromiseSettledResult<Awaited<T[K]>>;
-}> {
-  return Promise.allSettled(requests);
+  return handleResponse<T>(response, options.showErrorToast);
 }

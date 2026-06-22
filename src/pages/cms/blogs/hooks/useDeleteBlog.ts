@@ -12,13 +12,13 @@ export const useDeleteBlog = () => {
       queryClient.invalidateQueries({ queryKey: ['blogsList'] });
       queryClient.invalidateQueries({ queryKey: ['blog'] });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        'Failed to delete blog';
-      toast.error(message);
-    }
+    // onError: (err: any) => {
+    //   const message =
+    //     err?.response?.data?.message ||
+    //     err?.message ||
+    //     'Failed to delete blog';
+    //   toast.error(message);
+    // }
   });
   return { deleteBlog, isLoading: isPending };
 };

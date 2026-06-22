@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 
 interface FormHeaderProps {
   title: string;
@@ -83,8 +83,9 @@ export default function FormHeader({
             onClick={onSecondaryClick}
             {...secondaryButtonProps}
             className='type-body-md! border-primary-500 min-h-12 w-fit min-w-31 bg-transparent px-4 py-3.5 text-neutral-700 hover:bg-neutral-100 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+            disabled={secondaryButtonProps?.disabled || isPrimaryLoading || isSecondaryLoading}
           >
-            {isSecondaryLoading ? <Loader2 /> : secondaryLabel}
+            {isSecondaryLoading ? <Spinner /> : secondaryLabel}
           </Button>
         )}
 
@@ -92,9 +93,9 @@ export default function FormHeader({
           type='submit'
           className='bg-primary-500 type-body-md! min-h-12 w-fit min-w-31 border-0 px-4 py-3.5 text-white'
           {...primaryButtonProps}
-          disabled={isPrimaryLoading}
+          disabled={primaryButtonProps?.disabled || isPrimaryLoading}
         >
-          {isPrimaryLoading ? <Loader2 /> : primaryLabel}
+          {isPrimaryLoading ? <Spinner /> : primaryLabel}
         </Button>
       </div>
     </div>

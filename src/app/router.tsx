@@ -1,27 +1,37 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import AuthLayout from '../components/layout/AuthLayout';
-import LoginPage from '../pages/auth/pages/login/LoginPage';
-import GlobalFormPage from '../pages/forms/GlobalFormPage';
-import HomePage from '../pages/home/HomePage';
-
-import ErrorPage from '@/pages/error/ErrorPage';
-import ResetPasswordPage from '@/pages/auth/pages/resetPassword/ResetPasswordPage';
-import VerifyEmailPage from '@/pages/auth/pages/verifyEmail/VerifyEmailPage';
-import ForgetPasswordPage from '@/pages/auth/pages/forgetPassword/ForgetPasswordPage';
-import ExpiredPage from '@/pages/auth/pages/errorPage/Expired';
-import Admins from '@/pages/admins/Admins';
-import NewAdmin from '@/pages/admins/pages/NewAdmin';
-import Roles from '@/pages/roles/rolesPage';
-import AddRole from '@/pages/roles/AddRole';
-import EditRole from '@/pages/roles/EditRole';
-import { UnderDevelopment } from '@/components/shared/empty-states';
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import GuestRoute from '@/components/routes/GuestRoute';
-import Users from '@/pages/user-mangement/Users';
-import CreateBlogPage from '@/pages/cms/blogs/pages/CreateBlogPage';
-import BlogsPage from '@/pages/cms/blogs/BlogsPage';
-import EditBlogPage from '@/pages/cms/blogs/pages/EditBlogPage';
+import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
+import { UnderDevelopment } from '@/components/shared/empty-states';
+
+// Eagerly loaded (part of the initial bundle — small and always needed)
+import ErrorPage from '@/pages/error/ErrorPage';
+import AccessDeniedPage from '@/pages/error/AccessDeniedPage';
+
+// Lazily loaded pages — each becomes its own async chunk
+const LoginPage = lazy(() => import('../pages/auth/pages/login/LoginPage'));
+const GlobalFormPage = lazy(() => import('../pages/forms/GlobalFormPage'));
+const HomePage = lazy(() => import('../pages/home/HomePage'));
+const ResetPasswordPage = lazy(() => import('@/pages/auth/pages/resetPassword/ResetPasswordPage'));
+const VerifyEmailPage = lazy(() => import('@/pages/auth/pages/verifyEmail/VerifyEmailPage'));
+const ForgetPasswordPage = lazy(() => import('@/pages/auth/pages/forgetPassword/ForgetPasswordPage'));
+const ExpiredPage = lazy(() => import('@/pages/auth/pages/errorPage/Expired'));
+const Admins = lazy(() => import('@/pages/admins/Admins'));
+const NewAdmin = lazy(() => import('@/pages/admins/pages/NewAdmin'));
+const Roles = lazy(() => import('@/pages/roles/rolesPage'));
+const EditBlogPage = lazy(() => import('@/pages/cms/blogs/pages/EditBlogPage'));
+const AddRole = lazy(() => import('@/pages/roles/AddRole'));
+const EditRole = lazy(() => import('@/pages/roles/EditRole'));
+const BlogsPage = lazy(() => import('@/pages/cms/blogs/BlogsPage'));
+const CreateBlogPage = lazy(() => import('@/pages/cms/blogs/pages/CreateBlogPage'));
+const Users = lazy(() => import('@/pages/user-mangement/Users'));
+
+// Thin Suspense fallback shown while a lazy chunk is downloading.
+// Replace null with a spinner/skeleton component if desired.
+const PageLoader = () => null;
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +43,9 @@ export const router = createBrowserRouter([
           {
             element: (
               <ProtectedRoute>
-                <AppLayout />
+                <Suspense fallback={<PageLoader />}>
+                  <AppLayout />
+                </Suspense>
               </ProtectedRoute>
             ),
             children: [
@@ -55,15 +67,37 @@ export const router = createBrowserRouter([
               },
               {
                 path: 'cms/blogs',
-                element: <BlogsPage />,
+                element: (
+                  <WithPermissions
+                    permissions={['blogs.read']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <BlogsPage />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'cms/blogs/create',
-                element: <CreateBlogPage />,
+                element: (
+                  <WithPermissions
+                    permissions={['blogs.create']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <CreateBlogPage />
+                  </WithPermissions>
+                ),
+
               },
               {
                 path: 'cms/blogs/edit/:blogId',
-                element: <EditBlogPage />,
+                element: (
+                  <WithPermissions
+                    permissions={['blogs.update']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <EditBlogPage />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'cms/faqs',
@@ -83,27 +117,62 @@ export const router = createBrowserRouter([
               },
               {
                 path: 'settings/admins',
-                element: <Admins />,
+                element: (
+                  <WithPermissions
+                    permissions={['admins.read']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <Admins />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'settings/admins/add',
-                element: <NewAdmin mode='add' />,
+                element: (
+                  <WithPermissions
+                    permissions={['admins.create']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <NewAdmin mode='add' />
+                  </WithPermissions>
+                ),
               },
-              // {
-              //   path: 'settings/admins/edit/:adminId',
-              //   element: <NewAdmin mode='edit' />,
-              // },
+              {
+                path: 'settings/admins/edit/:adminId',
+                element: <WithPermissions permissions={["admins.update"]} fallback={<AccessDeniedPage />}> <NewAdmin mode='edit' /> </WithPermissions>,
+              },
               {
                 path: 'settings/roles',
-                element: <Roles />,
+                element: (
+                  <WithPermissions
+                    permissions={['roles.read']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <Roles />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'settings/roles/add',
-                element: <AddRole />,
+                element: (
+                  <WithPermissions
+                    permissions={['roles.create']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <AddRole />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'settings/roles/edit/:roleId',
-                element: <EditRole />,
+                element: (
+                  <WithPermissions
+                    permissions={['roles.update']}
+                    fallback={<AccessDeniedPage />}
+                  >
+                    <EditRole />
+                  </WithPermissions>
+                ),
               },
               {
                 path: 'activity-log',
@@ -118,7 +187,9 @@ export const router = createBrowserRouter([
   {
     element: (
       <GuestRoute>
-        <AuthLayout />
+        <Suspense fallback={<PageLoader />}>
+          <AuthLayout />
+        </Suspense>
       </GuestRoute>
     ),
     errorElement: <ErrorPage />,

@@ -19,6 +19,9 @@ export const WithPermissions = ({
 
   if (isLoading || isError) return null;
 
+  const hasPermissions = permissions.length > 0;
+  if (!hasPermissions) return <>{children}</>;
+
   const hasAccess =
     require === 'all' ? hasAllPermissions(permissions) : hasSomePermissions(permissions);
 

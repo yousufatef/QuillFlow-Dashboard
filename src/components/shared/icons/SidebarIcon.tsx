@@ -128,17 +128,33 @@ const SidebarIcon = ({ name, fill = '#FCFCFC', stroke, className = '' }: IconPro
       </svg>
     ),
     arrowSide: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-        <g clipPath="url(#clip0_1004_2523)">
-          <path d="M6.875 16.25L13.125 10L6.875 3.75" stroke="#E7EBEA" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        width='20'
+        height='20'
+        viewBox='0 0 20 20'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        className={className}
+      >
+        <g clipPath='url(#clip0_1004_2523)'>
+          <path
+            d='M6.875 16.25L13.125 10L6.875 3.75'
+            stroke='#E7EBEA'
+            strokeWidth='1.5'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
         </g>
         <defs>
-          <clipPath id="clip0_1004_2523">
-            <rect width="20" height="20" fill="white" />
+          <clipPath id='clip0_1004_2523'>
+            <rect
+              width='20'
+              height='20'
+              fill='white'
+            />
           </clipPath>
         </defs>
       </svg>
-
     ),
     docs: (
       <svg

@@ -20,7 +20,6 @@ const AdminTable = () => {
   const { clearTableSearchParams, params } = useTableSearchParam();
   const hasFilters = !!params.sort;
   const { admins, isLoading, isFetching, error, totalCount } = useAdminsList();
-console.log('Total:', totalCount);
   const filteredAdmins = useMemo(
     () =>
       admins?.map((admin: Admin, index: number) => ({

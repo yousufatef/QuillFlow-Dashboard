@@ -6,7 +6,7 @@ import FieldMessage from '@/components/forms/FieldMessage';
 import { formFieldStyles } from '@/components/forms/form-field.styles';
 import type { FieldBaseProps } from '@/components/forms/field.types';
 import type { FieldValues } from 'react-hook-form';
-import { useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import BlogIcons from '../icons/blog-icons/BlogIcons';
 import { useTranslation } from 'react-i18next';
 import {
@@ -73,6 +73,9 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
   const { t } = useTranslation();
   const isAr = getCurrLocale() === 'ar';
 
+  const { setValue, clearErrors, trigger } = useFormContext();
+
+
   // Watch for preview field value (for edit mode with existing images)
   const existingPreviewUrl = useWatch({
     control,
@@ -126,14 +129,14 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
           }
         }, [file, existingPreviewUrl]);
 
-        const validateAndSet = (incomingFiles: FileList | null) => {
+        const validateAndSet = async (incomingFiles: FileList | null) => {
           setUploadError('');
 
           if (!incomingFiles?.length) return;
 
           const selectedFile = incomingFiles[0];
 
-          if (!isAcceptedImageFile(selectedFile)) {
+          if (!(await isAcceptedImageFile(selectedFile))) {
             const errorMsg = getImageFileTypeErrorMessage();
             toast({
               description: errorMsg,
@@ -156,12 +159,19 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
           }
 
           field.onChange(selectedFile);
+          clearErrors(name as any);
+          void trigger(name as any);
         };
 
         const removeFile = () => {
           setUploadError('');
           field.onChange(null);
+          if (previewFieldName) {
+            setValue(previewFieldName as any, null);
+          }
           if (inputRef.current) inputRef.current.value = '';
+          clearErrors(name as any);
+          void trigger(name as any);
         };
 
         const handleClick = () => {
@@ -175,7 +185,7 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
               aria-invalid={fieldState.invalid}
               aria-label='Upload image'
               className={cn(
-                'bg-background focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 flex items-center gap-4 rounded-[4px] border-2 border-dashed border-neutral-100 p-2 transition-colors focus-visible:ring-3 focus-visible:outline-none aria-invalid:ring-3',
+                ' focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 flex items-center gap-4 rounded-[4px] border-2 border-dashed border-neutral-100 p-2 transition-colors focus-visible:ring-3 focus-visible:outline-none aria-invalid:ring-3',
                 dragOver && 'border-primary bg-primary/5',
                 isDisabled && 'pointer-events-none cursor-not-allowed opacity-50',
                 !isDisabled && !file && 'cursor-pointer',
@@ -196,7 +206,7 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
                 event.preventDefault();
                 event.stopPropagation();
                 setDragOver(false);
-                if (!isDisabled) validateAndSet(event.dataTransfer.files);
+                if (!isDisabled) void validateAndSet(event.dataTransfer.files);
               }}
               onKeyDown={(event) => {
                 if ((event.key === 'Enter' || event.key === ' ') && !isDisabled && !file) {
@@ -268,7 +278,9 @@ function CustomImageUploader<TFieldValues extends FieldValues = FieldValues>({
                 disabled={isDisabled}
                 multiple={false}
                 onBlur={field.onBlur}
-                onChange={(event) => validateAndSet(event.target.files)}
+                onChange={(event) => {
+                  void validateAndSet(event.target.files);
+                }}
                 ref={inputRef}
                 type='file'
               />

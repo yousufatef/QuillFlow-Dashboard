@@ -49,7 +49,9 @@ export default function ConfirmDialog({
           <DialogTitle className='type-heading-sm!'>{title}</DialogTitle>
         </DialogHeader>
 
-        <div className='type-body-md text-secondary-400 text-neutral-400'>{description}</div>
+        <div className='type-body-md text-secondary-400 max-w-full overflow-hidden text-neutral-400'>
+          {description}
+        </div>
 
         <DialogFooter className='mt-2'>
           <Button
@@ -63,7 +65,7 @@ export default function ConfirmDialog({
 
           <Button
             variant={mode === 'destructive' ? 'destructive' : 'default'}
-            className={`type-body-md min-h-10 w-fit border-0 px-4 py-2.5 ${mode === 'destructive' ? 'bg-error-500 hover:bg-error-600 focus:ring-error-400' : 'bg-primary-500 hover:bg-primary-600 focus:ring-primary-400'} text-white`}
+            className={`type-body-md min-h-10 w-fit border-0 px-4 py-2.5 transition-all ${mode === 'destructive' ? 'bg-error-500 hover:bg-error-600 focus:ring-error-400' : 'bg-primary-500 hover:bg-primary-600 focus:ring-primary-400'} text-white`}
             onClick={onConfirm}
             disabled={loading}
           >

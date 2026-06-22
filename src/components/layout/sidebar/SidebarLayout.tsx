@@ -6,18 +6,17 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/compone
 import { cn } from '@/lib/utils';
 import SidebarUserMenu from './SidebarUserMenu';
 import SidebarIcon from '@/components/shared/icons/SidebarIcon';
-import {
-  getCmsNavItems,
-  getMainNavItems,
-  getSettingsNavItems,
-} from '@/constants/sidebar.constant';
+import { getCmsNavItems, getMainNavItems, getSettingsNavItems } from '@/constants/sidebar.constant';
 import type { CustomSidebarProps } from '@/types/layout.types';
 import NavItem from './NavItem';
 import ExpandableNavItem from './ExpandableNavItem';
+import { useUser } from '@/hooks/auth/useUser';
+import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 
 function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const { user } = useUser()
   const isCmsRoute = pathname.startsWith('/cms');
   const isSettingsRoute = pathname.startsWith('/settings');
 
@@ -26,7 +25,6 @@ function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
 
   const [settingsOpen, setSettingsOpen] = useState(isSettingsRoute);
   const [prevIsSettingsRoute, setPrevIsSettingsRoute] = useState(isSettingsRoute);
-
   // Sync state if pathname changes to trigger auto-expand
   if (isCmsRoute !== prevIsCmsRoute) {
     setPrevIsCmsRoute(isCmsRoute);
@@ -61,14 +59,18 @@ function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
       <SidebarContent className='gap-0 px-0 py-4'>
         <nav className='flex flex-col gap-0'>
           {mainNavItems.map((item) => (
-            <NavItem
+            <WithPermissions
+              permissions={item.permissions ?? []}
               key={item.href}
-              end={item.href === '/'}
-              icon={item.icon}
-              to={item.href}
             >
-              {item.title}
-            </NavItem>
+              <NavItem
+                end={item.href === '/'}
+                icon={item.icon}
+                to={item.href}
+              >
+                {item.title}
+              </NavItem>
+            </WithPermissions>
           ))}
 
           {/* CMS — expandable group */}
@@ -107,10 +109,9 @@ function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
           <span className='min-w-0 flex-1 truncate'>{t('sidebar.nav.activityLog')}</span>
         </NavLink>
 
-
         <SidebarUserMenu
-          name='Mina Atef'
-          role='Admin'
+          name={user?.fullName ?? ''}
+          role={user?.roleName ?? ''}
         />
       </SidebarFooter>
     </Sidebar>
