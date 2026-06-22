@@ -44,7 +44,7 @@ function saveRefreshTokens(payload: RefreshTokenResponse) {
 }
 
 export async function getUserDetails<TUser = unknown>() {
-  const response = await apiRequest<TUser | ApiResult<TUser>>('users/current-user', {
+  const response = await apiRequest<TUser | ApiResult<TUser>>('users/profile', {
     method: 'GET',
   });
 
