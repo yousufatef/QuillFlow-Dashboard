@@ -44,7 +44,7 @@ function saveRefreshTokens(payload: RefreshTokenResponse) {
 }
 
 export async function getUserDetails<TUser = unknown>() {
-  const response = await apiRequest<TUser | ApiResult<TUser>>('/identity/admin/profile', {
+  const response = await apiRequest<TUser | ApiResult<TUser>>('users/profile', {
     method: 'GET',
   });
 
@@ -54,7 +54,7 @@ export async function getUserDetails<TUser = unknown>() {
 // ------------------------ LOGIN API ------------------------
 export async function loginApi({ email, password }: LoginParams): Promise<LoginResponse> {
   const response = await apiRequest<LoginResponse | ApiResult<LoginResponse>>(
-    'identity/admin/auth/login',
+    'auth/login-admin',
 
     {
       method: 'POST',
@@ -75,7 +75,7 @@ export async function refreshTokenApi(): Promise<RefreshTokenResponse> {
   const refreshToken = Cookies.get(REFRESH_TOKEN);
 
   const response = await apiRequest<RefreshTokenResponse | ApiResult<RefreshTokenResponse>>(
-    'identity/admin/auth/refresh-token',
+    'auth/refresh',
     {
       method: 'POST',
       body: {
