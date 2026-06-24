@@ -2,7 +2,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import RoleSummary from '../components/RoleSummary';
 import { useNavigate } from 'react-router-dom';
-import CustomInput, { CustomSelect } from '@/components/forms';
+import CustomInput, { CustomPasswordInput, CustomSelect } from '@/components/forms';
 import { useEffect } from 'react';
 import { Form } from '@/components/ui/form';
 import { useParams } from 'react-router-dom';
@@ -11,57 +11,75 @@ import { useUpdateAdmin } from '@/pages/admins/hooks/useUpdateAdmin';
 import { useCreateAdmin } from '@/pages/admins/hooks/useCreateAdmin';
 import PageLayout from '@/components/layout/PageLayout';
 import { useTranslation } from 'react-i18next';
-import { createAdminSchema, type AdminFormValues } from '../schemas/admin-schema';
+import {
+  createAdminSchema,
+  updateAdminSchema,
+  type AdminFormValues,
+  type UpdateAdminFormValues,
+} from '../schemas/admin-schema';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import ErrorPage from '@/pages/error/ErrorPage';
-import { useGetAdminRolesPermissions } from '../hooks/useGetRoles';
 import { useDirection } from '@/i18n/useDirection';
-import type { AssignedRole } from '../types/admin.types';
+import type { AssignedRole, NewAdmin } from '../types/admin.types';
+import { useGetAdminRoles } from '../hooks/useGetRoles';
 
-type NewAdminProps = {
+type AdminFormProps = {
   mode: 'add' | 'edit';
 };
-export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
+
+export default function AdminForm({ mode = 'edit' }: AdminFormProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const direction = useDirection()
+  const direction = useDirection();
   const isEdit = mode === 'edit';
   const { adminId } = useParams<{ adminId: string }>();
+
   const { adminData: admin, isLoading, error } = useAdmin(adminId ?? '', isEdit);
   const { updateAdmin } = useUpdateAdmin();
   const { createAdmin } = useCreateAdmin();
-  const { adminData: roles, isLoading: isLoadingRoles } = useGetAdminRolesPermissions();
-  const roleOptions = roles?.filter((role: AssignedRole) => role.isActive)
-    .map((role: AssignedRole) => ({
-      value: role.id,
-      label: direction === 'ltr' ? role.nameEn : role.nameAr,
-    })) ?? [];
+  const { allRoles, isLoading: isLoadingRoles } = useGetAdminRoles();
 
-  const form = useForm<AdminFormValues>({
-    resolver: zodResolver(createAdminSchema(t)),
+  const roleOptions =
+    allRoles
+      ?.filter((role: AssignedRole) => role.isActive)
+      .map((role: AssignedRole) => ({
+        value: String(role.id),
+        label: direction === 'ltr' ? role.nameEn : role.nameAr,
+      })) ?? [];
+
+  // Use appropriate schema based on mode
+  const schema = isEdit ? updateAdminSchema(t) : createAdminSchema(t);
+
+  const form = useForm<AdminFormValues | UpdateAdminFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
-      fullName: '',
+      username: '',
       email: '',
-      phoneNumber: '',
+      password: '',
       roleId: '',
     },
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
 
-  const values = useWatch({
-    control: form.control,
-  });
+  const values = useWatch({ control: form.control });
 
-  const selectedRole = roles?.find(
-    (role: AssignedRole) => role.id === values.roleId
+  const selectedRole = allRoles?.find(
+    (role: AssignedRole) => String(role.id) === String((values as AdminFormValues).roleId),
   );
 
-  const onSubmit = (data: AdminFormValues) => {
+  const onSubmit = (data: AdminFormValues | UpdateAdminFormValues) => {
+    const payload = {
+      ...data,
+      roleId: Number(data.roleId),
+    };
+
     if (isEdit) {
-      updateAdmin({ id: adminId ?? '', data });
+      // Strip empty password for edit mode
+      if (!payload.password) delete payload.password;
+      updateAdmin({ id: adminId ?? '', data: payload });
     } else {
-      createAdmin(data);
+      createAdmin(payload as NewAdmin);
     }
   };
 
@@ -69,10 +87,10 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
     if (!admin) return;
 
     form.reset({
-      fullName: admin.fullName ?? '',
+      username: (admin as any).username ?? '',
       email: admin.email ?? '',
-      phoneNumber: admin.phoneNumber ?? '',
-      roleId: admin.roleId ?? '',
+      password: '',
+      roleId: admin.roleId ? String(admin.roleId) : '',
     });
   }, [admin, form]);
 
@@ -107,9 +125,9 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
               <div className='grid gap-x-4 gap-y-2 md:grid-cols-2 items-start'>
                 <CustomInput
                   control={form.control}
-                  label={t('admin.form.lable.fullName')}
-                  name='fullName'
-                  placeholder={t('admin.form.placeholders.fullName')}
+                  label={t('admin.form.lable.username')}
+                  name='username'
+                  placeholder={t('admin.form.placeholders.username')}
                   required
                 />
 
@@ -121,12 +139,12 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
                   required
                 />
 
-                <CustomInput
+                <CustomPasswordInput
                   control={form.control}
-                  label={t('admin.form.lable.phone')}
-                  name='phoneNumber'
-                  placeholder={t('admin.form.placeholders.phone')}
-                  required
+                  label={t('admin.form.lable.password')}
+                  name='password'
+                  placeholder={t('admin.form.placeholders.password')}
+                  required={!isEdit}
                 />
 
                 <CustomSelect
@@ -142,9 +160,8 @@ export default function NewAdmin({ mode = 'edit' }: NewAdminProps) {
 
             {/* RIGHT */}
             <RoleSummary
-              fullName={values.fullName}
-              email={values.email}
-              phone={values.phoneNumber}
+              username={(values as AdminFormValues).username}
+              email={(values as AdminFormValues).email}
               role={selectedRole}
             />
           </div>

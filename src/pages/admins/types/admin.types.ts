@@ -1,19 +1,35 @@
 export type Admin = {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
+  id: number;
   email: string;
-  roleId: string;
-  isActive: boolean;
-  createdOn?: string;
-  roleNameEn: string;
-  roleNameAr: string;
+  username: string;
+  userType: string;
+  isAccountVerified: boolean;
+  profileImage: string | null;
+  roleId: number | null;
+  created_at: string;
+  updated_at: string;
 };
+
 export type NewAdmin = {
-  fullName: string;
-  phoneNumber: string;
+  username: string;
   email: string;
-  roleId: string;
+  password: string;
+  roleId: number;
+};
+
+export type UpdateAdmin = {
+  username: string;
+  email: string;
+  password?: string;
+  roleId: number;
+};
+
+export type AdminsListApiRes = {
+  isSuccess: boolean;
+  message: string;
+  errors: string[] | null;
+  statusCode: number;
+  result: Admin[];
 };
 
 export interface AdminRole {
@@ -24,6 +40,7 @@ export interface AdminRole {
   assignedUsersCount: number;
   permissionsCount: number;
 }
+
 export interface AdminRolesResponse {
   isSuccess: boolean;
   data: {
@@ -38,12 +55,13 @@ export interface AdminRolesResponse {
 }
 
 export type AssignedRole = {
-  id: string;
+  id: string | number;
   nameEn: string;
   nameAr: string;
   isActive?: boolean;
-  assignedPermissions: AssignedPermission[];
+  assignedPermissions?: AssignedPermission[];
 };
+
 export type AssignedPermission = {
   permissionId: string;
   permissionCode: string;

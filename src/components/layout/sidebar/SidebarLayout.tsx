@@ -11,12 +11,12 @@ import type { CustomSidebarProps } from '@/types/layout.types';
 import NavItem from './NavItem';
 import ExpandableNavItem from './ExpandableNavItem';
 import { useUser } from '@/hooks/auth/useUser';
-import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 
 function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const { user } = useUser()
+  const { user } = useUser();
+
   const isCmsRoute = pathname.startsWith('/cms');
   const isSettingsRoute = pathname.startsWith('/settings');
 
@@ -25,7 +25,8 @@ function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
 
   const [settingsOpen, setSettingsOpen] = useState(isSettingsRoute);
   const [prevIsSettingsRoute, setPrevIsSettingsRoute] = useState(isSettingsRoute);
-  // Sync state if pathname changes to trigger auto-expand
+
+  // Sync open state when route changes externally (e.g. browser back/forward)
   if (isCmsRoute !== prevIsCmsRoute) {
     setPrevIsCmsRoute(isCmsRoute);
     if (isCmsRoute) setCmsOpen(true);
@@ -59,18 +60,14 @@ function SidebarLayout({ side = 'left' }: CustomSidebarProps) {
       <SidebarContent className='gap-0 px-0 py-4'>
         <nav className='flex flex-col gap-0'>
           {mainNavItems.map((item) => (
-            <WithPermissions
-              permissions={item.permissions ?? []}
+            <NavItem
               key={item.href}
+              end={item.href === '/'}
+              icon={item.icon}
+              to={item.href}
             >
-              <NavItem
-                end={item.href === '/'}
-                icon={item.icon}
-                to={item.href}
-              >
-                {item.title}
-              </NavItem>
-            </WithPermissions>
+              {item.title}
+            </NavItem>
           ))}
 
           {/* CMS — expandable group */}

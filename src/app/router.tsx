@@ -4,12 +4,10 @@ import AppLayout from '../components/layout/AppLayout';
 import AuthLayout from '../components/layout/AuthLayout';
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import GuestRoute from '@/components/routes/GuestRoute';
-import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 import { UnderDevelopment } from '@/components/shared/empty-states';
 
 // Eagerly loaded (part of the initial bundle — small and always needed)
 import ErrorPage from '@/pages/error/ErrorPage';
-import AccessDeniedPage from '@/pages/error/AccessDeniedPage';
 
 // Lazily loaded pages — each becomes its own async chunk
 const LoginPage = lazy(() => import('../pages/auth/pages/login/LoginPage'));
@@ -20,7 +18,7 @@ const VerifyEmailPage = lazy(() => import('@/pages/auth/pages/verifyEmail/Verify
 const ForgetPasswordPage = lazy(() => import('@/pages/auth/pages/forgetPassword/ForgetPasswordPage'));
 const ExpiredPage = lazy(() => import('@/pages/auth/pages/errorPage/Expired'));
 const Admins = lazy(() => import('@/pages/admins/Admins'));
-const NewAdmin = lazy(() => import('@/pages/admins/pages/NewAdmin'));
+const NewAdmin = lazy(() => import('@/pages/admins/pages/AdminForm'));
 const Roles = lazy(() => import('@/pages/roles/rolesPage'));
 const EditBlogPage = lazy(() => import('@/pages/cms/blogs/pages/EditBlogPage'));
 const AddRole = lazy(() => import('@/pages/roles/AddRole'));
@@ -68,35 +66,23 @@ export const router = createBrowserRouter([
               {
                 path: 'cms/blogs',
                 element: (
-                  <WithPermissions
-                    permissions={['blogs.read']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <BlogsPage />
-                  </WithPermissions>
+
+                  <BlogsPage />
                 ),
               },
               {
                 path: 'cms/blogs/create',
                 element: (
-                  <WithPermissions
-                    permissions={['blogs.create']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <CreateBlogPage />
-                  </WithPermissions>
+
+                  <CreateBlogPage />
                 ),
 
               },
               {
                 path: 'cms/blogs/edit/:blogId',
                 element: (
-                  <WithPermissions
-                    permissions={['blogs.update']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <EditBlogPage />
-                  </WithPermissions>
+
+                  <EditBlogPage />
                 ),
               },
               {
@@ -118,60 +104,39 @@ export const router = createBrowserRouter([
               {
                 path: 'settings/admins',
                 element: (
-                  <WithPermissions
-                    permissions={['admins.read']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <Admins />
-                  </WithPermissions>
+                  <Admins />
                 ),
               },
               {
                 path: 'settings/admins/add',
                 element: (
-                  <WithPermissions
-                    permissions={['admins.create']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <NewAdmin mode='add' />
-                  </WithPermissions>
+
+                  <NewAdmin mode='add' />
                 ),
               },
               {
                 path: 'settings/admins/edit/:adminId',
-                element: <WithPermissions permissions={["admins.update"]} fallback={<AccessDeniedPage />}> <NewAdmin mode='edit' /> </WithPermissions>,
+                element: <NewAdmin mode='edit' />,
               },
               {
                 path: 'settings/roles',
                 element: (
-                  <WithPermissions
-                    permissions={['roles.read']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <Roles />
-                  </WithPermissions>
+
+                  <Roles />
                 ),
               },
               {
                 path: 'settings/roles/add',
                 element: (
-                  <WithPermissions
-                    permissions={['roles.create']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <AddRole />
-                  </WithPermissions>
+
+                  <AddRole />
                 ),
               },
               {
                 path: 'settings/roles/edit/:roleId',
                 element: (
-                  <WithPermissions
-                    permissions={['roles.update']}
-                    fallback={<AccessDeniedPage />}
-                  >
-                    <EditRole />
-                  </WithPermissions>
+
+                  <EditRole />
                 ),
               },
               {

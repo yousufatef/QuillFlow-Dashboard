@@ -252,13 +252,17 @@
         "fullName": "Full Name",
         "email": "Email",
         "phone": "Phone",
-        "role": "Role"
+        "role": "Role",
+        "username": "Username",
+        "password": "Password"
       },
       "placeholders": {
         "fullName": "Enter Full Name",
         "email": "Enter Email",
         "phone": "Enter Phone",
-        "role": "Select admin role"
+        "role": "Select admin role",
+        "username": "Enter Username",
+        "password": "Enter Password"
       }
     },
     "buttons": {

@@ -11,7 +11,6 @@ import { DeleteIcon } from '@/components/shared/icons/admins/DeleteIcon';
 import ConfirmDialog from '@/components/shared/customs/CustomConfirmDialog';
 import { useTranslation } from 'react-i18next';
 import { useDirection } from '@/i18n/useDirection';
-import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
 const ActionButton = ({ admin }: { admin?: Admin }) => {
   const { t } = useTranslation();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -20,7 +19,7 @@ const ActionButton = ({ admin }: { admin?: Admin }) => {
   const direction = useDirection();
   const isEnglish = direction === 'ltr';
   async function handleDelete() {
-    await deleteAdmin(admin?.id ?? '');
+    await deleteAdmin(String(admin?.id ?? ''));
     setIsDeleteOpen(false);
   }
 
@@ -50,55 +49,49 @@ const ActionButton = ({ admin }: { admin?: Admin }) => {
               {t('admin.buttons.resendLink')}
             </Link>
           </DropdownMenuItem>
-          <WithPermissions permissions={["admins.update"]}>
-            <DropdownMenuItem>
-              <EditIcon />
-              <Link
-                to={`/settings/admins/edit/${admin?.id}`}
-                className='w-full'
-              >
-                {t('admin.buttons.edit')}
-              </Link>
-            </DropdownMenuItem>
-          </WithPermissions>
-
-          <WithPermissions permissions={["admins.delete"]}>
-            <DropdownMenuItem
-              variant='destructive'
-              onClick={() => setIsDeleteOpen(true)}
+          <DropdownMenuItem>
+            <EditIcon />
+            <Link
+              to={`/settings/admins/edit/${admin?.id}`}
+              className='w-full'
             >
-              <DeleteIcon />
-              {t('admin.buttons.delete')}
-            </DropdownMenuItem>
-          </WithPermissions>
+              {t('admin.buttons.edit')}
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            variant='destructive'
+            onClick={() => setIsDeleteOpen(true)}
+          >
+            <DeleteIcon />
+            {t('admin.buttons.delete')}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       {/* Delete DIALOG */}
-      <WithPermissions permissions={["admins.delete"]}>
-        <ConfirmDialog
-          open={isDeleteOpen}
-          onCancel={() => setIsDeleteOpen(false)}
-          title={isEnglish ? 'Delete Admin' : 'حذف الادمن'}
-          description={
-            isEnglish ? (
-              <p className='text-secondary-400'>
-                Are you sure you want to delete this Admin{' '}
-                from Admins List?
-              </p>
-            ) : (
-              <p className='text-secondary-400'>
-                هل انت متأكد من مسح الادمن من قائمة الادمن ؟
-              </p>
-            )
-          }
-          confirmText={t('admin.buttons.delete')}
-          cancelText={t('admin.buttons.cancel')}
-          onConfirm={handleDelete}
-          mode='destructive'
-          loading={isLoading}
-        />
-      </WithPermissions>
+      <ConfirmDialog
+        open={isDeleteOpen}
+        onCancel={() => setIsDeleteOpen(false)}
+        title={isEnglish ? 'Delete Admin' : 'حذف الادمن'}
+        description={
+          isEnglish ? (
+            <p className='text-secondary-400'>
+              Are you sure you want to delete this Admin{' '}
+              from Admins List?
+            </p>
+          ) : (
+            <p className='text-secondary-400'>
+              هل انت متأكد من مسح الادمن من قائمة الادمن ؟
+            </p>
+          )
+        }
+        confirmText={t('admin.buttons.delete')}
+        cancelText={t('admin.buttons.cancel')}
+        onConfirm={handleDelete}
+        mode='destructive'
+        loading={isLoading}
+      />
     </>
   );
 };

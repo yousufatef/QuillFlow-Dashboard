@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAdminRolesPermissionsListApi } from '../services/admins.service';
 
-export const useGetAdminRolesPermissions = () => {
+export const useGetAdminRoles = () => {
   const { data, isLoading, error } = useQuery<any>({
-    queryKey: ['adminRoles'],
+    queryKey: ['allRoles'],
     queryFn: () => getAdminRolesPermissionsListApi(),
   });
 
-  return { adminData: data?.data, isLoading, error };
+  return { allRoles: data?.result ?? data?.data, isLoading, error };
 };
 

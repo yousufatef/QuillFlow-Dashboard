@@ -1,43 +1,25 @@
-import { Switch } from '@/components/ui/switch';
-import { useChangeAdminStatus } from '../hooks/useChangeAdminStatus';
+import { Badge } from '@/components/ui/badge';
 import { type Admin } from '../types/admin.types';
-import { cn } from '@/lib/utils';
 import { useDirection } from '@/i18n/useDirection';
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Displays the account verification status of an admin as a badge.
+ * The new API no longer has an `isActive` toggle — it uses `isAccountVerified`.
+ */
 const ActiveSwitch = ({ admin }: { admin: Admin }) => {
-    const { editAdminStatus, isLoading } = useChangeAdminStatus();
+  const direction = useDirection();
+  const { t } = useTranslation();
 
-    const direction = useDirection();
-
-    async function onCheckedChange(checked: boolean) {
-        // Prevent multiple clicks while loading
-        if (isLoading) return;
-
-        try {
-            await editAdminStatus({
-                id: admin?.id ?? '',
-                isActive: checked,
-            });
-        } catch (error) {
-            console.error('Failed to toggle admin status:', error);
-        }
-    }
-
-    const isChecked = admin.isActive;
-
-    return (
-        <Switch
-            dir={direction}
-            checked={isChecked}
-            disabled={isLoading}
-            onCheckedChange={onCheckedChange}
-            className={cn(
-                isChecked
-                    ? 'data-[state=checked]:bg-primary-500'
-                    : 'data-[state=unchecked]:bg-secondary-200',
-            )}
-        />
-    );
+  return (
+    <Badge
+      className={`type-body-xs-semibold capitalize ${
+        admin.isAccountVerified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+      }`}
+    >
+      {admin.isAccountVerified ? t('common.verified') : t('common.unverified')}
+    </Badge>
+  );
 };
 
 export default ActiveSwitch;
