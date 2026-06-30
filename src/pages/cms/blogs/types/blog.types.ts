@@ -30,10 +30,13 @@ export type BlogStatus = (typeof BlogStatus)[keyof typeof BlogStatus];
 
 export interface BlogCardProps {
   id: string;
-  title: string;
-  description: string;
-  readOfTime: string;
+  nameEn?: string;
+  nameAr?: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
+  readTime?: string;
   coverImageUrl: string;
+  coverImage?: string;
   isPublished: boolean;
   publishedOn: string | null;
   createdOn: string;

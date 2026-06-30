@@ -51,8 +51,7 @@ function EditBlogPage() {
   return (
     <FormProvider {...form}>
       <form
-        onSubmit={form.handleSubmit(handleSave, (errors) => {
-          console.log('Validation errors:', errors);
+        onSubmit={form.handleSubmit(handleSave, () => {
         })}
         className="flex h-full flex-col bg-background"
         style={{

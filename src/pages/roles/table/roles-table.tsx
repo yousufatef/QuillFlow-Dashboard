@@ -1,14 +1,13 @@
 import { CustomSearchBar, CustomTable } from '@/components/shared/customs';
 import type { Role } from '@/types/permissions-types';
 import type { ColumnDef } from '@tanstack/react-table';
-import UserInitials from '@/components/shared/customs/UserInitials';
 import RoleActions from '../components/RoleActions';
 import { useTranslation } from 'react-i18next';
 import useRoles from '@/hooks/permissions/useRoles';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import LoadingError from '@/components/shared/error/LoadingError';
 import Pagination from '@/components/shared/customs/CustomPagination';
-import { WithPermissions } from '@/components/shared/permissions/WithPermissions';
+import { Badge } from '@/components/ui/badge';
 
 const RolesTable = () => {
   const { t } = useTranslation();
@@ -20,32 +19,18 @@ const RolesTable = () => {
       accessorKey: isEnglish ? 'nameEn' : 'nameAr',
       header: t('roles.table.roleName'),
     },
+
     {
-      id: 'users',
-      accessorKey: 'assignedUsersCount',
-      header: t('roles.table.users'),
-    },
-    {
-      id: 'permissionsNumber',
-      accessorKey: 'permissionsCount',
-      header: t('roles.table.permissionsNumber'),
-    },
-    {
-      id: 'createdBy',
-      accessorKey: 'createdByAdmin',
-      header: t('roles.table.createdBy'),
-      cell: ({ row: { original: role } }) => <UserInitials name={role.createdBy} />,
+      id: 'isActive',
+      accessorKey: 'isActive',
+      header: t('roles.table.isActive'),
+      cell: ({ row: { original: role } }) => <Badge color={role.isActive ? 'green' : 'red'}>{role.isActive ? t('roles.actions.active') : t('roles.actions.inactive')}</Badge>,
     },
     {
       id: 'more',
       header: t('table.more'),
       cell: ({ row }) => (
-        <WithPermissions
-          permissions={['roles.delete', 'roles.update']}
-          require='some'
-        >
-          <RoleActions role={row.original} />
-        </WithPermissions>
+        <RoleActions role={row.original} />
       ),
     },
   ];
@@ -62,8 +47,7 @@ const RolesTable = () => {
       />
     );
 
-  const rolesList = data?.data.result || [];
-  const totlaCount = data?.data.totalCount || 0;
+  const rolesList = data?.result || [];
 
   return (
     <div className='mt-6 flex flex-col gap-6'>
@@ -84,7 +68,7 @@ const RolesTable = () => {
         />
       </div>
 
-      <Pagination totalCount={totlaCount} />
+      <Pagination totalCount={10} />
     </div>
   );
 };

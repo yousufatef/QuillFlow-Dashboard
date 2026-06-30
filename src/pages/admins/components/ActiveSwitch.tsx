@@ -1,6 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 import { type Admin } from '../types/admin.types';
-import { useDirection } from '@/i18n/useDirection';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -8,14 +7,12 @@ import { useTranslation } from 'react-i18next';
  * The new API no longer has an `isActive` toggle — it uses `isAccountVerified`.
  */
 const ActiveSwitch = ({ admin }: { admin: Admin }) => {
-  const direction = useDirection();
   const { t } = useTranslation();
 
   return (
     <Badge
-      className={`type-body-xs-semibold capitalize ${
-        admin.isAccountVerified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-      }`}
+      className={`type-body-xs-semibold capitalize ${admin.isAccountVerified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+        }`}
     >
       {admin.isAccountVerified ? t('common.verified') : t('common.unverified')}
     </Badge>

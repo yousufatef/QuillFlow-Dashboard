@@ -1,6 +1,5 @@
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import RoleSummary from '../components/RoleSummary';
 import { useNavigate } from 'react-router-dom';
 import CustomInput, { CustomPasswordInput, CustomSelect } from '@/components/forms';
 import { useEffect } from 'react';
@@ -62,11 +61,8 @@ export default function AdminForm({ mode = 'edit' }: AdminFormProps) {
     reValidateMode: 'onChange',
   });
 
-  const values = useWatch({ control: form.control });
 
-  const selectedRole = allRoles?.find(
-    (role: AssignedRole) => String(role.id) === String((values as AdminFormValues).roleId),
-  );
+
 
   const onSubmit = (data: AdminFormValues | UpdateAdminFormValues) => {
     const payload = {
@@ -158,12 +154,7 @@ export default function AdminForm({ mode = 'edit' }: AdminFormProps) {
               </div>
             </div>
 
-            {/* RIGHT */}
-            <RoleSummary
-              username={(values as AdminFormValues).username}
-              email={(values as AdminFormValues).email}
-              role={selectedRole}
-            />
+          
           </div>
         </PageLayout>
       </form>

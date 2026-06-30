@@ -12,29 +12,20 @@ import { useGetBlogList } from '@/pages/cms/blogs/hooks/useGetBlogList';
 import MainLoader from '@/components/shared/loader/MainLoader';
 import LoadingError from '@/components/shared/error/LoadingError';
 import type { BlogCardProps } from '@/pages/cms/blogs/types/blog.types';
-import { usePermissions } from '@/hooks/permissions/usePermissions';
 
-interface BlogResponse {
-  data: {
-    result: BlogCardProps[];
-    totalCount: number;
-  };
-}
+
 
 const BlogsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { hasPermission } = usePermissions();
-  const hasAddPermission = hasPermission('blogs.create');
 
   const { data, isLoading, isError, refetch } = useGetBlogList();
 
   if (isLoading) return <MainLoader />;
   if (isError) return <LoadingError onRefetch={refetch} />;
 
-  const blogList = (data as BlogResponse)?.data?.result ?? [];
-  const totalCount = (data as BlogResponse)?.data?.totalCount ?? 0;
+  const blogList = data?.result ?? [];
   const isEmpty = blogList.length === 0;
 
   return (
@@ -42,7 +33,7 @@ const BlogsPage = () => {
       title={t('pages.blogs.headerTitle')}
       primaryLabel={t('pages.blogs.create')}
       onPrimaryClick={() => navigate('/cms/blogs/create')}
-      showPrimaryButton={hasAddPermission}
+      showPrimaryButton={true}
     >
       <div className="px-6">
         {/* Filtering and search */}
@@ -91,7 +82,7 @@ const BlogsPage = () => {
 
         {!isEmpty && (
           <div className="flex flex-col items-center gap-3 py-4 md:flex-row md:justify-between">
-            <Pagination totalCount={totalCount} pageSize={6} />
+            <Pagination totalCount={1} pageSize={6} />
           </div>
         )}
       </div>

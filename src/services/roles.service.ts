@@ -11,14 +11,14 @@ import type { ApiResponse, QueryParams } from '@/types/index.t';
 
 export const ROLES_LIST_QUERY_KEY = 'roles-list';
 export async function getRoles(params: QueryParams): Promise<RolesListApiRes> {
-  return apiRequest(`/identity/admin/roles?${generateQueryParams(params)}`, {
+  return apiRequest(`roles?${generateQueryParams(params)}`, {
     method: 'GET',
   });
 }
 
 export const ROLE_DETAILS_QUERY_KEY = 'role-details';
 export const getRoleDetails = async (roleId: string): Promise<ApiResponse<RoleApiRes>> => {
-  return apiRequest(`/identity/admin/roles/${roleId}`, {
+  return apiRequest(`roles/${roleId}`, {
     method: 'GET',
   });
 };

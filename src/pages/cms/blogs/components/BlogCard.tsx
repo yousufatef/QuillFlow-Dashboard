@@ -1,10 +1,8 @@
 import type { BlogCardProps } from '@/pages/cms/blogs/types/blog.types';
 import { BlogStatus } from '@/pages/cms/blogs/types/blog.types';
 import ActionsDropDown from './ActionsDropDown';
-import BlogIcons from '@/components/shared/icons/blog-icons/BlogIcons';
 import StatusBadge from '@/components/shared/customs/StatusBadge';
 import { useTranslation } from 'react-i18next';
-import { formatDateShort } from '@/utils/date';
 
 const BlogCard = (blog: BlogCardProps) => {
   const { i18n } = useTranslation();
@@ -19,8 +17,8 @@ const BlogCard = (blog: BlogCardProps) => {
       {/* Image Section */}
       <div className='relative aspect-video max-h-41 w-full overflow-hidden'>
         <img
-          src={blog.coverImageUrl}
-          alt={blog.title}
+          src={blog.coverImage}
+          alt={blog.nameEn}
           className='h-full w-full rounded-[8px] object-cover'
         />
 
@@ -40,39 +38,29 @@ const BlogCard = (blog: BlogCardProps) => {
         {/* Title */}
         {/* Title */}
         <h3 className='type-body-lg-semibold text-neutral-900 line-clamp-1'>
-          {blog.title}
+          {isEnglish ? blog.nameEn : blog.nameAr}
         </h3>
 
         {/* Description */}
         <p className='type-body-sm text-neutral-500 h-[2.7rem] line-clamp-2'>
-          {blog.description}
+          {isEnglish ? blog.descriptionEn : blog.descriptionAr}
         </p>
 
         {/* Meta Chips */}
         <div className='mt-1 flex flex-wrap items-center gap-2'>
           {/* Date */}
-          <div className='inline-flex items-center gap-1.5 rounded-[8px] bg-neutral-50 px-4 py-2 text-xs font-medium text-neutral-900'>
+          {/* <div className='inline-flex items-center gap-1.5 rounded-[8px] bg-neutral-50 px-4 py-2 text-xs font-medium text-neutral-900'>
             <BlogIcons name='cardCalender' />
             <span>{formatDateShort(blog.createdOn, isEnglish)}</span>
-          </div>
-
-          {/* Reading Time */}
-          <div className='inline-flex items-center gap-1.5 rounded-[8px] bg-neutral-50 px-4 py-2 text-xs font-medium text-neutral-900'>
-            <BlogIcons name='cardClock' />
-            <span>
-              {isEnglish
-                ? `${blog.readOfTime} min read`
-                : `${blog.readOfTime} دقائق قراءة`}
-            </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Updated Date */}
-        <p className='type-body-sm mt-auto pt-2 text-neutral-400'>
+        {/* <p className='type-body-sm mt-auto pt-2 text-neutral-400'>
           {blog.updatedOn
             ? `${isEnglish ? 'Updated' : 'تم التحديث'} ${formatDateShort(blog.updatedOn, isEnglish)}`
             : ''}
-        </p>
+        </p> */}
       </div>
     </div>
   );

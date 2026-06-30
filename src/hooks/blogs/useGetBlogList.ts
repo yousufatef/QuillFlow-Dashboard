@@ -6,10 +6,7 @@ import useLanguageQuery from '../useLanguageQuery';
 
 const BLOGS_LIST_QUERY_KEY = 'blogsList';
 
-const normalize = (v: string | string[] | undefined): string => {
-  if (Array.isArray(v)) return v[0] ?? '';
-  return v ?? '';
-};
+
 
 export const useGetBlogList = () => {
   const { pageNumber, pageSize, searchTerm, status } = useTableSearchParam();
@@ -18,11 +15,8 @@ export const useGetBlogList = () => {
     queryKey: [BLOGS_LIST_QUERY_KEY, pageNumber, pageSize, searchTerm, status],
     queryFn: () =>
       getBlogsListApi(
-        Number(pageNumber) || 1,
-        6,
-        normalize(searchTerm),
-        normalize(status),
-      ),
+
+        searchTerm),
     placeholderData: keepPreviousData,
   });
 

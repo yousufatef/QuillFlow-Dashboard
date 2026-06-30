@@ -1,4 +1,5 @@
 import { apiRequest } from '../../../../utils/api';
+import type { BlogCardProps } from '@/pages/cms/blogs/types/blog.types';
 
 
 export async function buildBlogFormData(data: any, status?: boolean): Promise<FormData> {
@@ -39,25 +40,13 @@ export async function buildBlogFormData(data: any, status?: boolean): Promise<Fo
 
 // blogs.service.ts
 export async function getBlogsListApi(
-  pageNumber: number,
-  pageSize: number,
   searchValue: string,
-  status: string,
 ) {
   const params = new URLSearchParams();
+  params.set('name', searchValue);
 
-  params.set('PageNumber', String(pageNumber || 1));
-  params.set('PageSize', String(pageSize || 6));
-  if (searchValue) params.set('SearchTerm', searchValue);
-  params.set('SortBy', '0');
-  params.set('SortOrder', '1');
 
-  if (status && status.toLowerCase() !== 'all') {
-    const isPublished = status.toLowerCase() === 'published';
-    params.set('IsPublished', String(isPublished));
-  }
-
-  const res = await apiRequest(`cms/blogs?${params.toString()}`, { method: 'GET' });
+  const res = await apiRequest<{ result: BlogCardProps[] }>(`blogs?${params.toString()}`, { method: 'GET' });
   return res;
 }
 

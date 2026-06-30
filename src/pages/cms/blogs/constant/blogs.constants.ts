@@ -39,14 +39,12 @@ export const getBlogMenuItems = (isPublished: boolean): {
       icon: 'publish',
       labelEn: isPublished ? 'Unpublish' : 'Publish',
       labelAr: isPublished ? 'إلغاء النشر' : 'نشر',
-      permissions: (isPublished ? ['blogs.update'] : ['blogs.update']) as AppPermissions[],
     },
     {
       action: 'edit',
       icon: 'edit',
       labelEn: 'Edit',
       labelAr: 'تعديل',
-      permissions: ['blogs.update'] as AppPermissions[],
     },
     {
       action: 'delete',
@@ -54,7 +52,6 @@ export const getBlogMenuItems = (isPublished: boolean): {
       labelEn: 'Delete',
       labelAr: 'حذف',
       className: 'text-error-500',
-      permissions: ['blogs.delete'] as AppPermissions[],
     },
   ];
 

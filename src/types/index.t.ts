@@ -15,12 +15,10 @@ export interface ApiResponse<T> {
 
 export interface ListApiResponse<T> {
   isSuccess: boolean;
-  data: {
-    totalCount?: number;
-    pageSize?: number;
-    pageNumber?: number;
-    result: T;
-  };
+  result: T;
+  totalCount?: number;
+  pageSize?: number;
+  pageNumber?: number;
   message: string | null;
   errors: string[] | null;
   statusCode: number;

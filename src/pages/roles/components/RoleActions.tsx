@@ -34,14 +34,12 @@ const RoleActions = ({ role }: { role: Role }) => {
             text: t('roles.actions.edit'),
             variant: 'default',
             icon: <EditIcon />,
-            permissions: ['roles.update'],
           },
           {
             onClick: () => setIsDeleteOpen(true),
             text: t('roles.actions.delete'),
             variant: 'destructive',
             icon: <DeleteIcon />,
-            permissions: ['roles.delete'],
           },
         ]}
       />

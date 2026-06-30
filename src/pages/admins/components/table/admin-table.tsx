@@ -26,10 +26,10 @@ const AdminTable = () => {
     const list = admins ?? [];
     const searched = search
       ? list.filter(
-          (admin: Admin) =>
-            admin.username?.toLowerCase().includes(search) ||
-            admin.email?.toLowerCase().includes(search),
-        )
+        (admin: Admin) =>
+          admin.username?.toLowerCase().includes(search) ||
+          admin.email?.toLowerCase().includes(search),
+      )
       : list;
 
     return searched.map((admin: Admin, index: number) => ({

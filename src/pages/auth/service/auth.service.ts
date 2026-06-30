@@ -75,7 +75,7 @@ export async function refreshTokenApi(): Promise<RefreshTokenResponse> {
   const refreshToken = Cookies.get(REFRESH_TOKEN);
 
   const response = await apiRequest<RefreshTokenResponse | ApiResult<RefreshTokenResponse>>(
-    'identity/admin/auth/refresh-token',
+    'auth/refresh',
     {
       method: 'POST',
       body: {

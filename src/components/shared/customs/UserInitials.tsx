@@ -1,14 +1,13 @@
 import { cn } from '@/lib/utils';
 
-const getInitials = (name: string) => {
+function getInitials(name?: string): string {
+  if (!name) return '';
   return name
     .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.at(0)?.toUpperCase())
-    .join('');
-};
-
+    .map(part => part[0])
+    .join('')
+    .toUpperCase();
+}
 type UserInitialsProps = {
   name: string;
   className?: string;
